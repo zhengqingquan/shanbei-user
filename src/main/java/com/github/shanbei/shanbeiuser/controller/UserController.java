@@ -12,6 +12,7 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/user")
@@ -63,7 +64,7 @@ public class UserController {
 
     @GetMapping("/search")
     public List<User> searchUsers(String username, HttpServletRequest request) {
-        if (!isAdmin(request)){
+        if (!isAdmin(request)) {
             return new ArrayList<>();
         }
 
@@ -72,13 +73,14 @@ public class UserController {
         if (StringUtils.isNotBlank(username)) {
             queryWrapper.like("username", username);
         }
-        return userService.list(queryWrapper);
+        List<User> userList = userService.list(queryWrapper);
+        return userList.stream().map(userService::getSafetyUser).collect(Collectors.toList());
     }
 
 
     @PostMapping("/delete")
     public boolean deleteUser(@RequestBody long id, HttpServletRequest request) {
-        if (!isAdmin(request)){
+        if (!isAdmin(request)) {
             return false;
         }
 
@@ -92,13 +94,14 @@ public class UserController {
 
     /**
      * 是否为管理员
+     *
      * @param request
      * @return bool
      */
-    private boolean isAdmin(HttpServletRequest request){
+    private boolean isAdmin(HttpServletRequest request) {
         // 鉴权，仅管理员可以操作
         Object userObject = request.getSession().getAttribute(UserContent.USER_LOGIN_STATE);
         User user = (User) userObject;
-        return user != null && user.getRole() == UserContent.ADMIN_ROLE;
+        return user != null && user.getUserRole() == UserContent.ADMIN_ROLE;
     }
 }

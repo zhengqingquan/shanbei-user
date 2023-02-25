@@ -1,10 +1,10 @@
 package com.github.shanbei.shanbeiuser.model.domain;
 
 import com.baomidou.mybatisplus.annotation.*;
+import lombok.Data;
 
 import java.io.Serializable;
 import java.util.Date;
-import lombok.Data;
 
 /**
  * 用户表
@@ -14,9 +14,9 @@ import lombok.Data;
 @Data
 public class User implements Serializable {
     /**
-     *
+     * 
      */
-    @TableId
+    @TableId(type = IdType.AUTO)
     private Long id;
 
     /**
@@ -35,22 +35,22 @@ public class User implements Serializable {
     private String avatarUrl;
 
     /**
-     *
+     * 
      */
     private Integer gender;
 
     /**
-     *
+     * 
      */
     private String userPassword;
 
     /**
-     *
+     * 
      */
     private String phone;
 
     /**
-     *
+     * 
      */
     private String email;
 
@@ -58,13 +58,6 @@ public class User implements Serializable {
      *  状态
      */
     private Integer userStatus;
-
-    /**
-     *  角色。
-     *  0：普通用户
-     *  1：管理员
-     */
-    private Integer role;
 
     /**
      * 创建时间。默认当前时间。
@@ -77,10 +70,17 @@ public class User implements Serializable {
     private Date updateTime;
 
     /**
-     *
+     * 
      */
     @TableLogic
     private Integer isDelete;
+
+    /**
+     * 用户角色
+0：普通用户
+1：管理员
+     */
+    private Integer userRole;
 
     @TableField(exist = false)
     private static final long serialVersionUID = 1L;
