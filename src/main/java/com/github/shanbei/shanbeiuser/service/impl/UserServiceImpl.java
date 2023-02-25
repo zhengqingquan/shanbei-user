@@ -3,6 +3,7 @@ import java.util.Date;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.github.shanbei.shanbeiuser.content.UserContent;
 import com.github.shanbei.shanbeiuser.model.domain.User;
 import com.github.shanbei.shanbeiuser.service.UserService;
 import com.github.shanbei.shanbeiuser.mapper.UserMapper;
@@ -13,7 +14,6 @@ import org.springframework.util.DigestUtils;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
-import java.security.MessageDigest;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -32,9 +32,6 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
 
     // 加密盐值
     private static final String SALT = "shanbei";
-
-    // 用户登录态的键
-    private static final String USER_LOGIN_STATE = "userLoginState";
 
     @Override
     public long userRegister(String userAccount, String userPassword, String checkPassword) {
@@ -141,7 +138,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
         safetyUser.setCreateTime(new Date());
 
         // 记录用户的登录状态
-        request.getSession().setAttribute(USER_LOGIN_STATE, safetyUser);
+        request.getSession().setAttribute(UserContent.USER_LOGIN_STATE, safetyUser);
 
         // 返回脱敏后的用户信息
         return safetyUser;

@@ -11,6 +11,7 @@ import javax.servlet.http.HttpServletRequest;
  * @createDate 2023-02-23 23:02:11
  */
 public interface UserService extends IService<User> {
+
     /**
      * 用户注册功能
      * @param userAccount:   用户账号
