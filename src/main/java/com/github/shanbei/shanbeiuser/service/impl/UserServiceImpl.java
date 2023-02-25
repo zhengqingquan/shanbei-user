@@ -1,15 +1,18 @@
 package com.github.shanbei.shanbeiuser.service.impl;
+import java.util.Date;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.github.shanbei.shanbeiuser.model.domain.User;
 import com.github.shanbei.shanbeiuser.service.UserService;
 import com.github.shanbei.shanbeiuser.mapper.UserMapper;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.util.DigestUtils;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
 import java.security.MessageDigest;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -20,11 +23,18 @@ import java.util.regex.Pattern;
 * @createDate 2023-02-23 23:02:11
 */
 @Service
+@Slf4j
 public class UserServiceImpl extends ServiceImpl<UserMapper, User>
     implements UserService{
 
     @Resource
     private UserMapper userMapper;
+
+    // 加密盐值
+    private static final String SALT = "shanbei";
+
+    // 用户登录态的键
+    private static final String USER_LOGIN_STATE = "userLoginState";
 
     @Override
     public long userRegister(String userAccount, String userPassword, String checkPassword) {
@@ -64,7 +74,6 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
         }
 
         // 加密，插入数据库
-        final String SALT = "shanbei";
         String encryptPassword = DigestUtils.md5DigestAsHex((SALT+userPassword).getBytes());
         User user = new User();
         user.setUserAccount(userAccount);
@@ -78,6 +87,64 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
 
         // 返回用户 ID
         return user.getId();
+    }
+
+    @Override
+    public User userlogin(String userAccount, String userPassword, HttpServletRequest request) {
+
+        // 校验输入值非空
+        if(StringUtils.isAnyBlank(userAccount,userPassword)){
+            return null;
+        }
+
+        // 校验用户长度小于4
+        if (userAccount.length()<4){
+            return null;
+        }
+
+        // 密码不小于8位
+        if(userPassword.length()<8){
+            return null;
+        }
+
+        // 账户不包含任何特殊字符
+        String validPatten = "/^((?!\\\\|\\/|:|\\*|\\?|<|>|\\||'|%|@|#|&|\\$|\\^|&|\\*).)$/";
+        Matcher matcher = Pattern.compile(validPatten).matcher(userPassword);
+        if(matcher.find()){
+            return null;
+        }
+
+        // 把输入的密码进行加密
+        String encryptPassword = DigestUtils.md5DigestAsHex((SALT+userPassword).getBytes());
+
+        // 查询用户是否存在，若不存在返回null并打印日志。
+        QueryWrapper<User> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("userAccount",userAccount);
+        queryWrapper.eq("userPassword",encryptPassword);
+        User user = userMapper.selectOne(queryWrapper);
+        if (user==null){
+            log.info("user login failed, userAccount cannot match userPasswod.");
+            return null;
+        }
+
+        // 用户脱敏
+        // 防止用户信息泄露给前端
+        User safetyUser = new User();
+        safetyUser.setId(user.getId());
+        safetyUser.setUsername(user.getUsername());
+        safetyUser.setUserAccount(user.getUserAccount());
+        safetyUser.setAvatarUrl(user.getAvatarUrl());
+        safetyUser.setGender(user.getGender());
+        safetyUser.setPhone(user.getPhone());
+        safetyUser.setEmail(user.getEmail());
+        safetyUser.setUserStatus(user.getUserStatus());
+        safetyUser.setCreateTime(new Date());
+
+        // 记录用户的登录状态
+        request.getSession().setAttribute(USER_LOGIN_STATE, safetyUser);
+
+        // 返回脱敏后的用户信息
+        return safetyUser;
     }
 }
 
