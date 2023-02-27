@@ -3,6 +3,12 @@
 2. 用户管理（仅管理员可见），可以对用户的查询或修改
 3. 用户校验
 
+### 前后端分离
+
+[前端项目](https://github.com/zhengqingquan/shanbei-user-front)
+
+[后端项目](https://github.com/zhengqingquan/shanbei-user)
+
 ### 技术选型
 1. java
 2. spring（依赖注入框架、帮助你管理Java对象，集成一些其它内容）
