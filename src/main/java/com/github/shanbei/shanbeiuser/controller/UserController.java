@@ -78,7 +78,7 @@ public class UserController {
         return userList.stream().map(userService::getSafetyUser).collect(Collectors.toList());
     }
 
-    @GetMapping("/current")
+    @GetMapping("/currentUser")
     public User getCurrentUser(HttpServletRequest request) {
         // 获取用户登录态
         Object userObject = request.getSession().getAttribute(UserContent.USER_LOGIN_STATE);
