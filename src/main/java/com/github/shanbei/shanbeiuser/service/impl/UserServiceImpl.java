@@ -127,7 +127,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
 
         // 用户脱敏
         // 防止用户信息泄露给前端
-        User safetyUser =  getSafetyUser(user);
+        User safetyUser = getSafetyUser(user);
 
         // 记录用户的登录状态
         request.getSession().setAttribute(UserContent.USER_LOGIN_STATE, safetyUser);
@@ -139,11 +139,18 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
 
     /**
      * 用户脱敏
+     *
      * @param user
      * @return
      */
     @Override
     public User getSafetyUser(User user) {
+
+        // 非空校验
+        if (user == null) {
+            return null;
+        }
+
         User safetyUser = new User();
         safetyUser.setId(user.getId());
         safetyUser.setUsername(user.getUsername());

@@ -78,6 +78,19 @@ public class UserController {
         return userList.stream().map(userService::getSafetyUser).collect(Collectors.toList());
     }
 
+    @GetMapping("/current")
+    public User getCurrentUser(HttpServletRequest request) {
+        // 获取用户登录态
+        Object userObject = request.getSession().getAttribute(UserContent.USER_LOGIN_STATE);
+        User currentUser = (User) userObject;
+        if (currentUser == null) {
+            return null;
+        }
+        long userId = currentUser.getId();
+        // 校验用户是否合法
+        User user = userService.getById(userId);
+        return userService.getSafetyUser(user);
+    }
 
     @PostMapping("/delete")
     public boolean deleteUser(@RequestBody long id, HttpServletRequest request) {
@@ -101,6 +114,7 @@ public class UserController {
      */
     private boolean isAdmin(HttpServletRequest request) {
         // 鉴权，仅管理员可以操作
+        // 先获取用户登录态
         Object userObject = request.getSession().getAttribute(UserContent.USER_LOGIN_STATE);
         User user = (User) userObject;
         return user != null && user.getUserRole() == UserContent.ADMIN_ROLE;
