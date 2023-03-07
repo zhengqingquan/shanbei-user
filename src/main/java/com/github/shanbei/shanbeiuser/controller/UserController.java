@@ -3,6 +3,7 @@ package com.github.shanbei.shanbeiuser.controller;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.github.shanbei.shanbeiuser.content.UserContent;
 import com.github.shanbei.shanbeiuser.model.domain.User;
+import com.github.shanbei.shanbeiuser.model.domain.request.UserLoginRequest;
 import com.github.shanbei.shanbeiuser.model.domain.request.UserRegisterRequest;
 import com.github.shanbei.shanbeiuser.service.UserService;
 import org.apache.commons.lang3.StringUtils;
@@ -43,15 +44,15 @@ public class UserController {
     }
 
     @PostMapping("/login")
-    public User userLogin(@RequestBody UserRegisterRequest userRegisterRequest, HttpServletRequest request) {
+    public User userLogin(@RequestBody UserLoginRequest userLoginRequest, HttpServletRequest request) {
 
         // 非空检查
-        if (userRegisterRequest == null) {
+        if (userLoginRequest == null) {
             return null;
         }
 
-        String userAccount = userRegisterRequest.getUserAccount();
-        String userPassword = userRegisterRequest.getUserPassword();
+        String userAccount = userLoginRequest.getUserAccount();
+        String userPassword = userLoginRequest.getUserPassword();
 
         // 参数的校验。
         // 非业务逻辑的校验
