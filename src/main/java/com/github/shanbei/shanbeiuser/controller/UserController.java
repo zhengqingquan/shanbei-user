@@ -34,8 +34,7 @@ public class UserController {
         String userPassword = userRegisterRequest.getUserPassword();
         String checkPassword = userRegisterRequest.getCheckPassword();
 
-        // 参数的校验。
-        // 非业务逻辑的校验
+        // 参数的校验，非业务逻辑的校验。
         if (StringUtils.isAnyBlank(userAccount, userPassword, checkPassword)) {
             return null;
         }
@@ -54,8 +53,7 @@ public class UserController {
         String userAccount = userLoginRequest.getUserAccount();
         String userPassword = userLoginRequest.getUserPassword();
 
-        // 参数的校验。
-        // 非业务逻辑的校验
+        // 参数的校验，非业务逻辑的校验。
         if (StringUtils.isAnyBlank(userAccount, userPassword)) {
             return null;
         }
@@ -109,7 +107,7 @@ public class UserController {
     /**
      * 是否为管理员
      *
-     * @param request
+     * @param request Http请求
      * @return bool
      */
     private boolean isAdmin(HttpServletRequest request) {

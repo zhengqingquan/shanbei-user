@@ -2,8 +2,10 @@ package com.github.shanbei.shanbeiuser.content;
 
 /**
  * 用户常量
+ * @author zhengqq
  */
 public interface UserContent {
+
     /**
      * 用户登录态的键
      */

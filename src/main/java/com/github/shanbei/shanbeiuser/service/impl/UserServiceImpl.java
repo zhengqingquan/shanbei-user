@@ -136,13 +136,6 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
         return safetyUser;
     }
 
-
-    /**
-     * 用户脱敏
-     *
-     * @param user
-     * @return
-     */
     @Override
     public User getSafetyUser(User user) {
 
