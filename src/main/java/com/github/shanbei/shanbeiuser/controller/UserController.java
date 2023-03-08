@@ -1,6 +1,9 @@
 package com.github.shanbei.shanbeiuser.controller;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.github.shanbei.shanbeiuser.common.BaseResponse;
+import com.github.shanbei.shanbeiuser.common.ErrorCode;
+import com.github.shanbei.shanbeiuser.common.ResultUtils;
 import com.github.shanbei.shanbeiuser.content.UserContent;
 import com.github.shanbei.shanbeiuser.model.domain.User;
 import com.github.shanbei.shanbeiuser.model.domain.request.UserLoginRequest;
@@ -23,11 +26,11 @@ public class UserController {
     private UserService userService;
 
     @PostMapping("/register")
-    public Long userRegister(@RequestBody UserRegisterRequest userRegisterRequest) {
+    public BaseResponse<Long> userRegister(@RequestBody UserRegisterRequest userRegisterRequest) {
 
         // 非空检查
         if (userRegisterRequest == null) {
-            return null;
+            return ResultUtils.error(ErrorCode.PARAMS_ERROR);
         }
 
         String userAccount = userRegisterRequest.getUserAccount();
@@ -39,11 +42,13 @@ public class UserController {
             return null;
         }
 
-        return userService.userRegister(userAccount, userPassword, checkPassword);
+        long result = userService.userRegister(userAccount, userPassword, checkPassword);
+
+        return ResultUtils.success(result);
     }
 
     @PostMapping("/login")
-    public User userLogin(@RequestBody UserLoginRequest userLoginRequest, HttpServletRequest request) {
+    public BaseResponse<User> userLogin(@RequestBody UserLoginRequest userLoginRequest, HttpServletRequest request) {
 
         // 非空检查
         if (userLoginRequest == null) {
@@ -58,13 +63,27 @@ public class UserController {
             return null;
         }
 
-        return userService.userlogin(userAccount, userPassword, request);
+        User result = userService.userlogin(userAccount, userPassword, request);
+
+        return ResultUtils.success(result);
     }
 
+    @PostMapping("/logout")
+    public BaseResponse<Integer> userLogout(HttpServletRequest request) {
+        if (request == null) {
+            return null;
+        }
+
+        int result = userService.userLogout(request);
+
+        return ResultUtils.success(result);
+    }
+
+
     @GetMapping("/search")
-    public List<User> searchUsers(String username, HttpServletRequest request) {
+    public BaseResponse<List<User>> searchUsers(String username, HttpServletRequest request) {
         if (!isAdmin(request)) {
-            return new ArrayList<>();
+            return ResultUtils.success(new ArrayList<>());
         }
 
         // 偷懒，没定义服务层
@@ -73,11 +92,12 @@ public class UserController {
             queryWrapper.like("username", username);
         }
         List<User> userList = userService.list(queryWrapper);
-        return userList.stream().map(userService::getSafetyUser).collect(Collectors.toList());
+        List<User> result = userList.stream().map(userService::getSafetyUser).collect(Collectors.toList());
+        return ResultUtils.success(result);
     }
 
     @GetMapping("/currentUser")
-    public User getCurrentUser(HttpServletRequest request) {
+    public BaseResponse<User> getCurrentUser(HttpServletRequest request) {
         // 获取用户登录态
         Object userObject = request.getSession().getAttribute(UserContent.USER_LOGIN_STATE);
         User currentUser = (User) userObject;
@@ -87,21 +107,23 @@ public class UserController {
         long userId = currentUser.getId();
         // 校验用户是否合法
         User user = userService.getById(userId);
-        return userService.getSafetyUser(user);
+        User result = userService.getSafetyUser(user);
+        return ResultUtils.success(result);
     }
 
     @PostMapping("/delete")
-    public boolean deleteUser(@RequestBody long id, HttpServletRequest request) {
+    public BaseResponse<Boolean> deleteUser(@RequestBody long id, HttpServletRequest request) {
         if (!isAdmin(request)) {
-            return false;
+            return null;
         }
 
         // 参数的非空检查
         if (id <= 0) {
-            return false;
+            return null;
         }
 
-        return userService.removeById(id);
+        boolean result = userService.removeById(id);
+        return ResultUtils.success(result);
     }
 
     /**

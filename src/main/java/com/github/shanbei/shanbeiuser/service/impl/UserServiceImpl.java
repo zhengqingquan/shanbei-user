@@ -18,6 +18,8 @@ import javax.servlet.http.HttpServletRequest;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import static com.github.shanbei.shanbeiuser.content.UserContent.USER_LOGIN_STATE;
+
 /**
  * @author 96400
  * @description 针对表【user(用户表)】的数据库操作Service实现
@@ -130,7 +132,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
         User safetyUser = getSafetyUser(user);
 
         // 记录用户的登录状态
-        request.getSession().setAttribute(UserContent.USER_LOGIN_STATE, safetyUser);
+        request.getSession().setAttribute(USER_LOGIN_STATE, safetyUser);
 
         // 返回脱敏后的用户信息
         return safetyUser;
@@ -156,6 +158,13 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
         safetyUser.setCreateTime(new Date());
         safetyUser.setUserRole(user.getUserRole());
         return safetyUser;
+    }
+
+    @Override
+    public int userLogout(HttpServletRequest request) {
+        // 移除用户登录态。
+        request.getSession().removeAttribute(USER_LOGIN_STATE);
+        return 1;
     }
 }
 
