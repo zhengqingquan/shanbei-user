@@ -5,6 +5,7 @@ import com.github.shanbei.shanbeiuser.common.BaseResponse;
 import com.github.shanbei.shanbeiuser.common.ErrorCode;
 import com.github.shanbei.shanbeiuser.common.ResultUtils;
 import com.github.shanbei.shanbeiuser.content.UserContent;
+import com.github.shanbei.shanbeiuser.exception.BusinessException;
 import com.github.shanbei.shanbeiuser.model.domain.User;
 import com.github.shanbei.shanbeiuser.model.domain.request.UserLoginRequest;
 import com.github.shanbei.shanbeiuser.model.domain.request.UserRegisterRequest;
@@ -30,7 +31,8 @@ public class UserController {
 
         // 非空检查
         if (userRegisterRequest == null) {
-            return ResultUtils.error(ErrorCode.PARAMS_ERROR);
+            //return ResultUtils.error(ErrorCode.PARAMS_ERROR);
+            throw new BusinessException(ErrorCode.PARAMS_ERROR);
         }
 
         String userAccount = userRegisterRequest.getUserAccount();
