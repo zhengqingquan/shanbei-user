@@ -4,7 +4,9 @@ import java.util.Date;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.github.shanbei.shanbeiuser.common.ErrorCode;
 import com.github.shanbei.shanbeiuser.content.UserContent;
+import com.github.shanbei.shanbeiuser.exception.BusinessException;
 import com.github.shanbei.shanbeiuser.model.domain.User;
 import com.github.shanbei.shanbeiuser.service.UserService;
 import com.github.shanbei.shanbeiuser.mapper.UserMapper;
@@ -17,6 +19,8 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import static com.github.shanbei.shanbeiuser.content.UserContent.USER_LOGIN_STATE;
 
 /**
  * @author 96400
@@ -38,29 +42,29 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
     public long userRegister(String userAccount, String userPassword, String checkPassword) {
         // 校验输入值非空
         if (StringUtils.isAnyBlank(userAccount, userPassword, checkPassword)) {
-            return -1;
+            throw new BusinessException(ErrorCode.PARAMS_ERROR,"参数为空");
         }
 
         // 校验用户长度小于4
         if (userAccount.length() < 4) {
-            return -1;
+            throw new BusinessException(ErrorCode.PARAMS_ERROR,"用户账号过短");
         }
 
         // 密码不小于8位
         if (userPassword.length() < 8) {
-            return -1;
+            throw new BusinessException(ErrorCode.PARAMS_ERROR,"密码小于8位");
         }
 
         // 账户不包含任何特殊字符
         String validPatten = "/^((?!\\\\|\\/|:|\\*|\\?|<|>|\\||'|%|@|#|&|\\$|\\^|&|\\*).)$/";
         Matcher matcher = Pattern.compile(validPatten).matcher(userPassword);
         if (matcher.find()) {
-            return -1;
+            throw new BusinessException(ErrorCode.PARAMS_ERROR,"账号包含特殊字符");
         }
 
         // 密码和再次确认时输入的密码相同
         if (!userPassword.equals(checkPassword)) {
-            return -1;
+            throw new BusinessException(ErrorCode.PARAMS_ERROR,"密码两次输入不一致");
         }
 
         // 账户不能重复
@@ -68,7 +72,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
         queryWrapper.eq("userAccount", userAccount);
         long count = userMapper.selectCount(queryWrapper);
         if (count > 0) {
-            return -1;
+            throw new BusinessException(ErrorCode.PARAMS_ERROR,"账号重复");
         }
 
         // 加密，插入数据库
@@ -80,7 +84,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
 
         boolean saveResult = this.save(user);
         if (!saveResult) {
-            return -1;
+            throw new BusinessException(ErrorCode.PARAMS_ERROR,"数据库插入失败");
         }
 
         // 返回用户 ID
@@ -127,23 +131,23 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
 
         // 用户脱敏
         // 防止用户信息泄露给前端
-        User safetyUser =  getSafetyUser(user);
+        User safetyUser = getSafetyUser(user);
 
         // 记录用户的登录状态
-        request.getSession().setAttribute(UserContent.USER_LOGIN_STATE, safetyUser);
+        request.getSession().setAttribute(USER_LOGIN_STATE, safetyUser);
 
         // 返回脱敏后的用户信息
         return safetyUser;
     }
 
-
-    /**
-     * 用户脱敏
-     * @param user
-     * @return
-     */
     @Override
     public User getSafetyUser(User user) {
+
+        // 非空校验
+        if (user == null) {
+            return null;
+        }
+
         User safetyUser = new User();
         safetyUser.setId(user.getId());
         safetyUser.setUsername(user.getUsername());
@@ -156,6 +160,13 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
         safetyUser.setCreateTime(new Date());
         safetyUser.setUserRole(user.getUserRole());
         return safetyUser;
+    }
+
+    @Override
+    public int userLogout(HttpServletRequest request) {
+        // 移除用户登录态。
+        request.getSession().removeAttribute(USER_LOGIN_STATE);
+        return 1;
     }
 }
 
