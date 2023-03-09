@@ -96,6 +96,12 @@ public class UserController {
         return ResultUtils.success(result);
     }
 
+    /**
+     * 查询当前用户
+     *
+     * @param request HTTP请求
+     * @return BaseResponse<User>
+     */
     @GetMapping("/currentUser")
     public BaseResponse<User> getCurrentUser(HttpServletRequest request) {
         // 获取用户登录态
