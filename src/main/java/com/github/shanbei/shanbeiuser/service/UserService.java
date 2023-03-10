@@ -4,6 +4,7 @@ import com.github.shanbei.shanbeiuser.model.domain.User;
 import com.baomidou.mybatisplus.extension.service.IService;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.List;
 
 /**
  * @author 96400
@@ -44,4 +45,22 @@ public interface UserService extends IService<User> {
      * @return
      */
     int userLogout(HttpServletRequest request);
+
+    /**
+     * 根据tag搜索用户
+     * 使用内存查询的方法
+     *
+     * @param tagNameList
+     * @return
+     */
+    public List<User> searchUserByTagsJVM(List<String> tagNameList);
+
+    /**
+     * 根据tag搜索用户
+     * 使用数据库查询的方法
+     *
+     * @param tagList
+     * @return
+     */
+    List<User> searchUserByTagsSQL(List<String> tagList);
 }
