@@ -44,4 +44,11 @@ public interface SysPostService extends IService<SysPost> {
      */
     SysPost selectPostById(Long postId);
 
+    /**
+     * 根据岗位名称查询行尾信息
+     *
+     * @param postName 岗位名称
+     * @return 岗位对象
+     */
+    SysPost selectPostByName(String postName);
 }

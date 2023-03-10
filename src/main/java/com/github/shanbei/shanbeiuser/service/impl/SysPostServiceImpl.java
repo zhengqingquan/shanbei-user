@@ -36,14 +36,19 @@ public class SysPostServiceImpl extends ServiceImpl<SysPostMapper, SysPost>
 
     @Override
     public boolean removePost(Long postId) {
-        return false;
+        return sysPostMapper.deleteById(postId) > 0;
     }
 
     @Override
     public SysPost selectPostById(Long postId) {
-        QueryWrapper<SysPost> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq("postId", postId);
-        return sysPostMapper.selectById(queryWrapper);
+        return sysPostMapper.selectById(postId);
+    }
+
+    @Override
+    public SysPost selectPostByName(String postName) {
+        QueryWrapper<SysPost> queryWrapper=new QueryWrapper<>();
+        queryWrapper.eq("postName",postName);
+        return sysPostMapper.selectOne(queryWrapper);
     }
 }
 
