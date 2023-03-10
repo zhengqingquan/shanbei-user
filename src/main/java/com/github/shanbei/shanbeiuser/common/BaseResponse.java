@@ -6,6 +6,7 @@ import java.io.Serializable;
 
 /**
  * 通用返回类
+ * 也叫响应信息主体
  *
  * @param <T> 泛型，返回的响应数据的类型。
  * @author zhengqq
