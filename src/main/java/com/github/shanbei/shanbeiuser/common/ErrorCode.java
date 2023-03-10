@@ -7,11 +7,29 @@ package com.github.shanbei.shanbeiuser.common;
  */
 public enum ErrorCode {
 
+    /**
+     * 返回值成功
+     */
     SUCCESS(0, "ok", ""),
+    /**
+     * 请求参数错误
+     */
     PARAMS_ERROR(40000, "请求参数错误", ""),
+    /**
+     * 请求数据不存在错误
+     */
     NULL_ERROR(40001, "请求数据不存在", ""),
+    /**
+     * 未登录错误
+     */
     NOT_LOGIN_ERROR(40100, "未登录", ""),
+    /**
+     * 没有权限错误
+     */
     NO_AUTH_ERROR(40101, "没有权限", ""),
+    /**
+     * 系统内部异常错误
+     */
     SYSTEM_ERROR(50000, "系统内部异常", "");
 
     /**

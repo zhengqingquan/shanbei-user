@@ -26,12 +26,17 @@ public class UserController {
     @Resource
     private UserService userService;
 
+    /**
+     * 用户注册
+     *
+     * @param userRegisterRequest 用户注册请求数据
+     * @return
+     */
     @PostMapping("/register")
     public BaseResponse<Long> userRegister(@RequestBody UserRegisterRequest userRegisterRequest) {
 
         // 非空检查
         if (userRegisterRequest == null) {
-            //return ResultUtils.error(ErrorCode.PARAMS_ERROR);
             throw new BusinessException(ErrorCode.PARAMS_ERROR);
         }
 
@@ -49,12 +54,19 @@ public class UserController {
         return ResultUtils.success(result);
     }
 
+    /**
+     * 用户登录
+     *
+     * @param userLoginRequest
+     * @param request
+     * @return
+     */
     @PostMapping("/login")
     public BaseResponse<User> userLogin(@RequestBody UserLoginRequest userLoginRequest, HttpServletRequest request) {
 
         // 非空检查
         if (userLoginRequest == null) {
-            return null;
+            throw new BusinessException(ErrorCode.PARAMS_ERROR);
         }
 
         String userAccount = userLoginRequest.getUserAccount();
@@ -62,7 +74,7 @@ public class UserController {
 
         // 参数的校验，非业务逻辑的校验。
         if (StringUtils.isAnyBlank(userAccount, userPassword)) {
-            return null;
+            throw new BusinessException(ErrorCode.PARAMS_ERROR);
         }
 
         User result = userService.userlogin(userAccount, userPassword, request);
@@ -70,10 +82,16 @@ public class UserController {
         return ResultUtils.success(result);
     }
 
+    /**
+     * 用户注销
+     *
+     * @param request
+     * @return
+     */
     @PostMapping("/logout")
     public BaseResponse<Integer> userLogout(HttpServletRequest request) {
         if (request == null) {
-            return null;
+            throw new BusinessException(ErrorCode.PARAMS_ERROR);
         }
 
         int result = userService.userLogout(request);
@@ -82,6 +100,13 @@ public class UserController {
     }
 
 
+    /**
+     * 搜索用户
+     *
+     * @param username
+     * @param request
+     * @return
+     */
     @GetMapping("/search")
     public BaseResponse<List<User>> searchUsers(String username, HttpServletRequest request) {
         if (!isAdmin(request)) {
@@ -119,15 +144,24 @@ public class UserController {
         return ResultUtils.success(result);
     }
 
+    /**
+     * 删除用户
+     *
+     * @param id 用户ID
+     * @param request 请求
+     * @return
+     */
     @PostMapping("/delete")
     public BaseResponse<Boolean> deleteUser(@RequestBody long id, HttpServletRequest request) {
+
+        // 权限检查
         if (!isAdmin(request)) {
-            return null;
+            throw new BusinessException(ErrorCode.NO_AUTH_ERROR);
         }
 
         // 参数的非空检查
         if (id <= 0) {
-            return null;
+            throw new BusinessException(ErrorCode.PARAMS_ERROR);
         }
 
         boolean result = userService.removeById(id);

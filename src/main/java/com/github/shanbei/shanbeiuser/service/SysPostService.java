@@ -1,7 +1,8 @@
 package com.github.shanbei.shanbeiuser.service;
 
-import com.github.shanbei.shanbeiuser.model.domain.SysPost;
+
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.github.shanbei.shanbeiuser.model.domain.SysPost;
 
 import java.util.List;
 

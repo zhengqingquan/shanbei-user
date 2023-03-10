@@ -7,19 +7,32 @@ import java.io.Serializable;
 /**
  * 通用返回类
  *
- * @param <T>
+ * @param <T> 泛型，返回的响应数据的类型。
  * @author zhengqq
  */
 @Data
 public class BaseResponse<T> implements Serializable {
 
     private static final long serialVersionUID = 1381050981883960313L;
+
+    /**
+     * 响应的错误码
+     */
     private int code;
 
+    /**
+     * 响应的数据
+     */
     private T data;
 
+    /**
+     * 响应的信息
+     */
     private String message;
 
+    /**
+     * 响应的描述
+     */
     private String description;
 
     public BaseResponse(int code, T data, String message, String description) {
@@ -35,6 +48,10 @@ public class BaseResponse<T> implements Serializable {
 
     public BaseResponse(int code, T data) {
         this(code, data, "", "");
+    }
+
+    public BaseResponse(int code) {
+        this(code, null, "", "");
     }
 
     public BaseResponse(ErrorCode errorCode) {
