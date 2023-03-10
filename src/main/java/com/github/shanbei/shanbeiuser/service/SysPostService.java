@@ -1,7 +1,8 @@
 package com.github.shanbei.shanbeiuser.service;
 
-import com.github.shanbei.shanbeiuser.model.domain.SysPost;
+
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.github.shanbei.shanbeiuser.model.domain.SysPost;
 
 import java.util.List;
 
@@ -43,4 +44,11 @@ public interface SysPostService extends IService<SysPost> {
      */
     SysPost selectPostById(Long postId);
 
+    /**
+     * 根据岗位名称查询行尾信息
+     *
+     * @param postName 岗位名称
+     * @return 岗位对象
+     */
+    SysPost selectPostByName(String postName);
 }

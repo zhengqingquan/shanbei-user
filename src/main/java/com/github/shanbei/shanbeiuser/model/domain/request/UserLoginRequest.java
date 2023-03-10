@@ -9,8 +9,8 @@ import java.io.Serializable;
  */
 @Data
 public class UserLoginRequest implements Serializable {
-    private static final long serialVersionUID = -4252791596726319271L;
 
+    private static final long serialVersionUID = -4252791596726319271L;
 
     private String userAccount;
     private String userPassword;

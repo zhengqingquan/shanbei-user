@@ -10,9 +10,9 @@ public class ResultUtils {
     /**
      * 成功
      *
-     * @param data
-     * @param <T>
-     * @return
+     * @param data 需要返回的数据
+     * @param <T> 返回数据的类型
+     * @return 通用返回类
      */
     public static <T> BaseResponse<T> success(T data) {
         return new BaseResponse<>(0, data, "ok");
@@ -42,7 +42,9 @@ public class ResultUtils {
     /**
      * 失败
      *
-     * @param errorCode
+     * @param code
+     * @param message
+     * @param description
      * @return
      */
     public static BaseResponse error(int code, String message, String description) {

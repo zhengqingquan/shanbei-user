@@ -1,4 +1,4 @@
-create table user
+create table if not exists user
 (
     id           bigint unsigned auto_increment
         primary key,
@@ -15,7 +15,8 @@ create table user
     isDelete     tinyint   default 0                 not null,
     userRole     int       default 0                 not null comment '用户角色
 0：普通用户
-1：管理员'
+1：管理员',
+    tags         varchar(1024)                       null comment '标签列表'
 )
     comment '用户表';
 
