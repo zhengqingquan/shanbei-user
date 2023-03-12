@@ -16,6 +16,8 @@
 // */
 //@Configuration
 //@Enable
+//// Profile表示想要在哪个环境下加载这个Bean，也可以传入数组，限定配置只在部分环境开启
+//@Profile("dev")
 //public class Swagger2Config {
 //
 //    @Bean

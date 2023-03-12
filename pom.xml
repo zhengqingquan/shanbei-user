@@ -78,6 +78,7 @@
 <!--		</dependency>-->
 
 		<!-- knife4j -->
+		<!-- knife4j对swagger进行了界面封装，因为swagger提供了接口，可以再次继续界面封 -->
 		<!-- 管理能力较弱。适合做文档，不适合做管理 -->
 		<dependency>
 			<groupId>com.github.xiaoymin</groupId>
