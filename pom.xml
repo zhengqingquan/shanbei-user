@@ -78,6 +78,7 @@
 <!--		</dependency>-->
 
 		<!-- knife4j -->
+		<!-- 管理能力较弱。适合做文档，不适合做管理 -->
 		<dependency>
 			<groupId>com.github.xiaoymin</groupId>
 			<artifactId>knife4j-openapi2-spring-boot-starter</artifactId>
@@ -89,6 +90,16 @@
 			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
 		</dependency>
+
+		<!-- easyexcel -->
+		<!-- 用来处理excel的文档 -->
+		<dependency>
+			<groupId>com.alibaba</groupId>
+			<artifactId>easyexcel</artifactId>
+			<version>3.2.1</version>
+		</dependency>
+
+
 		<!-- https://mvnrepository.com/artifact/junit/junit -->
 		<dependency>
 			<groupId>junit</groupId>
