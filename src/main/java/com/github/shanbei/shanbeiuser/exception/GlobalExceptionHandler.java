@@ -8,9 +8,9 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 /**
- * 全局异常处理器
+ * 全局异常处理器。
  * RestControllerAdvice和ControllerAdvice是全局接口异常处理的类。
- * 当发生异常没有捕获时，便会触发这个异常
+ * 当发生异常没有捕获时，便会触发这个异常。
  *
  * @author zhengqingquan
  */
@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 public class GlobalExceptionHandler {
 
     /**
-     * 业务异常
+     * 业务异常。
      * 这个方法只去捕获BusinessException异常。
      *
      * @return
@@ -31,7 +31,7 @@ public class GlobalExceptionHandler {
     }
 
     /**
-     * 运行时异常
+     * 运行时异常。
      *
      * @param e
      * @return

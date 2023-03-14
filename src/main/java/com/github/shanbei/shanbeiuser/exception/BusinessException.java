@@ -1,17 +1,25 @@
 package com.github.shanbei.shanbeiuser.exception;
 
 import com.github.shanbei.shanbeiuser.common.ErrorCode;
+import lombok.Getter;
 
 /**
- * 业务异常类
- * 这里继承RuntimeException是为了可以不用自己去捕获它。
+ * 业务异常类，也可以叫自定义异常类。
+ * 这里继承RuntimeException是为了不用自己去捕获它。
  *
  * @author zhengqingquan
  */
+@Getter
 public class BusinessException extends RuntimeException {
 
+    /**
+     * 错误码
+     */
     private final int code;
 
+    /**
+     * 详细描述
+     */
     private final String description;
 
     public BusinessException(String message, int code, String description) {
@@ -30,13 +38,5 @@ public class BusinessException extends RuntimeException {
         super(errorCode.getMessage());
         this.code = errorCode.getCode();
         this.description = description;
-    }
-
-    public int getCode() {
-        return code;
-    }
-
-    public String getDescription() {
-        return description;
     }
 }
