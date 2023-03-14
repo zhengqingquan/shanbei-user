@@ -1,36 +1,56 @@
 package com.github.shanbei.shanbeiuser.common;
 
+import lombok.Getter;
+import lombok.ToString;
+
 /**
  * 错误码
  *
  * @author zhengqingquan
  */
+@Getter
+@ToString
 public enum ErrorCode {
 
     /**
      * 返回值成功
      */
-    SUCCESS(0, "ok", ""),
+    SUCCESS(0, "ok", "返回值成功"),
+
     /**
      * 请求参数错误
      */
-    PARAMS_ERROR(40000, "请求参数错误", ""),
-    /**
-     * 请求数据不存在错误
-     */
-    NULL_ERROR(40001, "请求数据不存在", ""),
+    PARAMS_ERROR(40000, "请求参数错误", "请求参数错误"),
+
     /**
      * 未登录错误
      */
-    NOT_LOGIN_ERROR(40100, "未登录", ""),
+    NOT_LOGIN_ERROR(40100, "未登录", "未登录错误"),
+
     /**
      * 没有权限错误
      */
-    NO_AUTH_ERROR(40101, "没有权限", ""),
+    NO_AUTH_ERROR(40101, "没有权限", "没有权限错误"),
+
+    /**
+     * 禁止访问错误
+     */
+    FORBIDDEN_ERROR(40300, "禁止访问", "禁止访问错误"),
+
+    /**
+     * 请求数据不存在错误
+     */
+    NOT_FOUND_ERROR(40400, "请求数据不存在", "请求数据不存在错误"),
+
     /**
      * 系统内部异常错误
      */
-    SYSTEM_ERROR(50000, "系统内部异常", "");
+    SYSTEM_ERROR(50000, "系统内部异常", "系统内部异常错误"),
+
+    /**
+     * 操作失败错误
+     */
+    OPERATION_ERROR(50001, "操作失败", "操作失败错误");
 
     /**
      * 错误码
@@ -51,17 +71,5 @@ public enum ErrorCode {
         this.code = code;
         this.message = message;
         this.description = description;
-    }
-
-    public int getCode() {
-        return code;
-    }
-
-    public String getMessage() {
-        return message;
-    }
-
-    public String getDescription() {
-        return description;
     }
 }
