@@ -4,7 +4,7 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.github.shanbei.shanbeiuser.common.BaseResponse;
 import com.github.shanbei.shanbeiuser.common.ErrorCode;
 import com.github.shanbei.shanbeiuser.common.ResultUtils;
-import com.github.shanbei.shanbeiuser.content.UserContent;
+import com.github.shanbei.shanbeiuser.constant.UserContent;
 import com.github.shanbei.shanbeiuser.exception.BusinessException;
 import com.github.shanbei.shanbeiuser.model.domain.User;
 import com.github.shanbei.shanbeiuser.model.domain.request.UserLoginRequest;

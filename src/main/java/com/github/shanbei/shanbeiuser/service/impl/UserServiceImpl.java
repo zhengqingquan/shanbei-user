@@ -2,7 +2,6 @@ package com.github.shanbei.shanbeiuser.service.impl;
 
 import java.util.*;
 
-import com.baomidou.mybatisplus.core.conditions.query.Query;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.github.shanbei.shanbeiuser.common.ErrorCode;
@@ -12,7 +11,6 @@ import com.github.shanbei.shanbeiuser.service.UserService;
 import com.github.shanbei.shanbeiuser.mapper.UserMapper;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-import jdk.nashorn.internal.parser.Token;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
@@ -25,7 +23,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
-import static com.github.shanbei.shanbeiuser.content.UserContent.USER_LOGIN_STATE;
+import static com.github.shanbei.shanbeiuser.constant.UserContent.USER_LOGIN_STATE;
 
 /**
  * @author 96400

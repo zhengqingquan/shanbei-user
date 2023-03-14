@@ -22,24 +22,25 @@ public class GlobalExceptionHandler {
      * 业务异常。
      * 这个方法只去捕获BusinessException异常。
      *
-     * @return
+     * @param e 异常
+     * @return 通用返回类
      */
     @ExceptionHandler(BusinessException.class)
     public BaseResponse BusinessExceptionHandler(BusinessException e) {
         log.error("businessException" + e.getMessage(), e);
-        return ResultUtils.error(ErrorCode.SYSTEM_ERROR, e.getMessage(), "");
+        return ResultUtils.error(ErrorCode.SYSTEM_ERROR, e.getMessage(), e.getDescription());
     }
 
     /**
      * 运行时异常。
      *
-     * @param e
-     * @return
+     * @param e 异常
+     * @return 通用返回类
      */
     @ExceptionHandler(RuntimeException.class)
     public BaseResponse RuntimeExceptionHandler(RuntimeException e) {
         log.error("runtimeException", e);
-        return ResultUtils.error(ErrorCode.SYSTEM_ERROR, e.getMessage(), "");
+        return ResultUtils.error(ErrorCode.SYSTEM_ERROR, e.getMessage(), "系统异常");
     }
 
 }
