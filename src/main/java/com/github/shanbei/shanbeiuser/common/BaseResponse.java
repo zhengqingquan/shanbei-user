@@ -9,7 +9,7 @@ import java.io.Serializable;
  * 也叫响应信息主体
  *
  * @param <T> 泛型，返回的响应数据的类型。
- * @author zhengqq
+ * @author zhengqingquan
  */
 @Data
 public class BaseResponse<T> implements Serializable {
@@ -49,10 +49,6 @@ public class BaseResponse<T> implements Serializable {
 
     public BaseResponse(int code, T data) {
         this(code, data, "", "");
-    }
-
-    public BaseResponse(int code) {
-        this(code, null, "", "");
     }
 
     public BaseResponse(ErrorCode errorCode) {
