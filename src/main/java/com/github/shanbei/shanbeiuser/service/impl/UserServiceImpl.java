@@ -9,6 +9,7 @@ import com.github.shanbei.shanbeiuser.exception.BusinessException;
 import com.github.shanbei.shanbeiuser.model.domain.User;
 import com.github.shanbei.shanbeiuser.service.UserService;
 import com.github.shanbei.shanbeiuser.mapper.UserMapper;
+import com.github.shanbei.shanbeiuser.service.enums.UserRoleEnum;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import lombok.extern.slf4j.Slf4j;
@@ -186,7 +187,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
         // 有篇文章parallelStream陷阱
         return userList.stream().filter(user -> {
             String tagsStr = user.getTags();
-            if (StringUtils.isBlank(tagsStr)){
+            if (StringUtils.isBlank(tagsStr)) {
                 return false;
             }
             // 这里做了一个类型的自动推断。
@@ -222,6 +223,20 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
         List<User> userList = userMapper.selectList(queryWrapper);
         // this::getSafetyUser也是Java8的特性。
         return userList.stream().map(this::getSafetyUser).collect(Collectors.toList());
+    }
+
+    @Override
+    public boolean isAdmin(HttpServletRequest request) {
+        // 仅管理员可查询
+        Object userObj = request.getSession().getAttribute(USER_LOGIN_STATE);
+        User user = (User) userObj;
+        return isAdmin(user);
+    }
+
+    @Override
+    public boolean isAdmin(User user) {
+        // 用户不为null，并且用户的角色为管理员。
+        return (user != null) && (UserRoleEnum.ADMIN.getRole() == user.getUserRole());
     }
 
     @Override

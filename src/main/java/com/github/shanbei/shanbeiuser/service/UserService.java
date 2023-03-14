@@ -27,7 +27,7 @@ public interface UserService extends IService<User> {
      * @param userAccount 用户账号
      * @param userPassword 用户密码
      * @param request http请求
-     * @return 返回账户的脱敏信息
+     * @return 返回脱敏后的账号信息
      */
     User userlogin(String userAccount, String userPassword, HttpServletRequest request);
 
@@ -37,7 +37,6 @@ public interface UserService extends IService<User> {
      * @return 安全的用户信息
      */
     User getSafetyUser(User user);
-
 
     /**
      * 用户注销
@@ -63,4 +62,20 @@ public interface UserService extends IService<User> {
      * @return
      */
     List<User> searchUserByTagsSQL(List<String> tagList);
+
+    /**
+     * 是否为管理员
+     *
+     * @param request
+     * @return
+     */
+    boolean isAdmin(HttpServletRequest request);
+
+    /**
+     * 是否为管理员
+     *
+     * @param user
+     * @return
+     */
+    boolean isAdmin(User user);
 }

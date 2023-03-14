@@ -1,4 +1,4 @@
-package com.github.shanbei.shanbeiuser.model.domain.request;
+package com.github.shanbei.shanbeiuser.model.domain.dto;
 
 import lombok.Data;
 

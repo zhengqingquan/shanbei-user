@@ -3,7 +3,7 @@ package com.github.shanbei.shanbeiuser.controller;
 import com.github.shanbei.shanbeiuser.common.BaseResponse;
 import com.github.shanbei.shanbeiuser.common.ResultUtils;
 import com.github.shanbei.shanbeiuser.model.domain.SysPost;
-import com.github.shanbei.shanbeiuser.model.domain.request.PostSearchRequest;
+import com.github.shanbei.shanbeiuser.model.domain.dto.PostSearchRequest;
 import com.github.shanbei.shanbeiuser.service.SysPostService;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestBody;

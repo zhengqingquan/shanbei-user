@@ -14,9 +14,11 @@ public interface UserContent {
 
     /**
      * 用户权限
-     * 0 - 普通用户权限
-     * 1 - 管理员权限
+     * 0 - 普通用户
+     * 1 - 管理员
+     * 2 - 被封号
      */
     int DEFAULT_ROLE = 0;
     int ADMIN_ROLE = 1;
+    int BAN_ROLE = 2;
 }
