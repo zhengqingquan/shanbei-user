@@ -61,6 +61,13 @@
 			<optional>true</optional>
 		</dependency>
 
+		<!-- elasticsearch -->
+		<!-- 开源的分布式搜索和分析引擎。-->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-data-elasticsearch</artifactId>
+		</dependency>
+
 		<!-- Json解析库 谷歌出品 安全可靠 -->
 		<!-- https://mvnrepository.com/artifact/com.google.code.gson/gson -->
 		<dependency>
