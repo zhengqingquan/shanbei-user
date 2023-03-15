@@ -14,6 +14,13 @@ spring:
     pathmatch:
       # 为了解决Swapper的路径出错问题。
       matching-strategy: ANT_PATH_MATCHER
+  # redis 配置
+  redis:
+    # 地址
+    host: localhost
+#    host: 127.0.0.1
+    # 端口，默认为6379
+    port: 6379
 server:
   port: 8080
   servlet:
