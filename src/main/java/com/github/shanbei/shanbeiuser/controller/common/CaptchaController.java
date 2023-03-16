@@ -1,5 +1,6 @@
 package com.github.shanbei.shanbeiuser.controller.common;
 
+import com.github.shanbei.shanbeiuser.model.domain.redis.RedisCache;
 import com.google.code.kaptcha.Producer;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,9 +32,9 @@ public class CaptchaController
     @Resource(name = "captchaProducerMath")
     private Producer captchaProducerMath;
 
-    // @Autowired
-    // private RedisCache redisCache;
-    //
+    @Resource
+    private RedisCache redisCache;
+
     // @Autowired
     // private ISysConfigService configService;
 
