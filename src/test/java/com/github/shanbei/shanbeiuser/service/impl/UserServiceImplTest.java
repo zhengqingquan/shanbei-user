@@ -1,11 +1,15 @@
 package com.github.shanbei.shanbeiuser.service.impl;
 
+import com.github.shanbei.shanbeiuser.model.domain.User;
 import com.github.shanbei.shanbeiuser.service.UserService;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import javax.annotation.Resource;
+
+import java.util.Arrays;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -58,5 +62,31 @@ class UserServiceImplTest {
         result = userService.userRegister(userAccount, userPassword, checkPassword);
         Assertions.assertTrue(result>0);
 
+    }
+
+    @Test
+    void userlogin() {
+    }
+
+    @Test
+    void getSafetyUser() {
+    }
+
+    @Test
+    void searchUserByTagsSQL() {
+        List<String> tagNameList = Arrays.asList("Java","Python");
+        List<User> userList = userService.searchUserByTagsSQL(tagNameList);
+        assertNotNull(userList);
+    }
+
+    @Test
+    void userLogout() {
+    }
+
+    @Test
+    void searchUserByTagsJVM() {
+        List<String> tagNameList = Arrays.asList("Java","Python");
+        List<User> userList = userService.searchUserByTagsJVM(tagNameList);
+        assertNotNull(userList);
     }
 }

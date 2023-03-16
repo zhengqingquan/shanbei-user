@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.github.shanbei.shanbeiuser.mapper.SysPostMapper">
+
+    <resultMap id="BaseResultMap" type="com.github.shanbei.shanbeiuser.model.domain.SysPost">
+            <id property="postId" column="postId" jdbcType="BIGINT"/>
+            <result property="postCode" column="postCode" jdbcType="VARCHAR"/>
+            <result property="postName" column="postName" jdbcType="VARCHAR"/>
+            <result property="postSort" column="postSort" jdbcType="INTEGER"/>
+            <result property="status" column="status" jdbcType="CHAR"/>
+            <result property="createBy" column="createBy" jdbcType="VARCHAR"/>
+            <result property="createTime" column="createTime" jdbcType="TIMESTAMP"/>
+            <result property="updateBy" column="updateBy" jdbcType="VARCHAR"/>
+            <result property="updateTime" column="updateTime" jdbcType="TIMESTAMP"/>
+            <result property="remark" column="remark" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        postId,postCode,postName,
+        postSort,status,createBy,
+        createTime,updateBy,updateTime,
+        remark
+    </sql>
+</mapper>

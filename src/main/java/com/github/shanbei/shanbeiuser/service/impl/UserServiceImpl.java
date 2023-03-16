@@ -1,22 +1,30 @@
 package com.github.shanbei.shanbeiuser.service.impl;
 
-import java.util.Date;
+import java.util.*;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.github.shanbei.shanbeiuser.content.UserContent;
+import com.github.shanbei.shanbeiuser.common.ErrorCode;
+import com.github.shanbei.shanbeiuser.exception.BusinessException;
 import com.github.shanbei.shanbeiuser.model.domain.User;
 import com.github.shanbei.shanbeiuser.service.UserService;
 import com.github.shanbei.shanbeiuser.mapper.UserMapper;
+import com.github.shanbei.shanbeiuser.service.enums.UserRoleEnum;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 import org.springframework.util.DigestUtils;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
+
+import static com.github.shanbei.shanbeiuser.constant.UserContent.USER_LOGIN_STATE;
 
 /**
  * @author 96400
@@ -38,29 +46,29 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
     public long userRegister(String userAccount, String userPassword, String checkPassword) {
         // 校验输入值非空
         if (StringUtils.isAnyBlank(userAccount, userPassword, checkPassword)) {
-            return -1;
+            throw new BusinessException(ErrorCode.PARAMS_ERROR, "参数为空");
         }
 
         // 校验用户长度小于4
         if (userAccount.length() < 4) {
-            return -1;
+            throw new BusinessException(ErrorCode.PARAMS_ERROR, "用户账号过短");
         }
 
         // 密码不小于8位
         if (userPassword.length() < 8) {
-            return -1;
+            throw new BusinessException(ErrorCode.PARAMS_ERROR, "密码小于8位");
         }
 
         // 账户不包含任何特殊字符
         String validPatten = "/^((?!\\\\|\\/|:|\\*|\\?|<|>|\\||'|%|@|#|&|\\$|\\^|&|\\*).)$/";
         Matcher matcher = Pattern.compile(validPatten).matcher(userPassword);
         if (matcher.find()) {
-            return -1;
+            throw new BusinessException(ErrorCode.PARAMS_ERROR, "账号包含特殊字符");
         }
 
         // 密码和再次确认时输入的密码相同
         if (!userPassword.equals(checkPassword)) {
-            return -1;
+            throw new BusinessException(ErrorCode.PARAMS_ERROR, "密码两次输入不一致");
         }
 
         // 账户不能重复
@@ -68,7 +76,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
         queryWrapper.eq("userAccount", userAccount);
         long count = userMapper.selectCount(queryWrapper);
         if (count > 0) {
-            return -1;
+            throw new BusinessException(ErrorCode.PARAMS_ERROR, "账号重复");
         }
 
         // 加密，插入数据库
@@ -80,7 +88,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
 
         boolean saveResult = this.save(user);
         if (!saveResult) {
-            return -1;
+            throw new BusinessException(ErrorCode.PARAMS_ERROR, "数据库插入失败");
         }
 
         // 返回用户 ID
@@ -127,23 +135,23 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
 
         // 用户脱敏
         // 防止用户信息泄露给前端
-        User safetyUser =  getSafetyUser(user);
+        User safetyUser = getSafetyUser(user);
 
         // 记录用户的登录状态
-        request.getSession().setAttribute(UserContent.USER_LOGIN_STATE, safetyUser);
+        request.getSession().setAttribute(USER_LOGIN_STATE, safetyUser);
 
         // 返回脱敏后的用户信息
         return safetyUser;
     }
 
-
-    /**
-     * 用户脱敏
-     * @param user
-     * @return
-     */
     @Override
     public User getSafetyUser(User user) {
+
+        // 非空校验
+        if (user == null) {
+            return null;
+        }
+
         User safetyUser = new User();
         safetyUser.setId(user.getId());
         safetyUser.setUsername(user.getUsername());
@@ -155,7 +163,87 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
         safetyUser.setUserStatus(user.getUserStatus());
         safetyUser.setCreateTime(new Date());
         safetyUser.setUserRole(user.getUserRole());
+        safetyUser.setTags(user.getTags());
         return safetyUser;
+    }
+
+    @Override
+    public List<User> searchUserByTagsJVM(List<String> tagNameList) {
+        if (CollectionUtils.isEmpty(tagNameList)) {
+            throw new BusinessException(ErrorCode.PARAMS_ERROR);
+        }
+        // 查询所有的用户
+        QueryWrapper<User> queryWrapper = new QueryWrapper<>();
+        List<User> userList = userMapper.selectList(queryWrapper);
+
+        Gson gson = new Gson();
+        // Java8特性
+        // 流式处理，filter过滤
+        // 如果有要我们要的数据返回，否则过滤掉。
+        // 过滤的过程可以使用并发计算，将stream()改为parallelStream()
+        // 并行流有缺点，因为并发肯定要有线程池，否则会有性能的浪费。
+        // 并行流用的是Java1.7带的forkjoinpull什么的。
+        // 这里的线程池如果消耗太大，其它地方用的parallelStream就没有线程池用了。
+        // 有篇文章parallelStream陷阱
+        return userList.stream().filter(user -> {
+            String tagsStr = user.getTags();
+            if (StringUtils.isBlank(tagsStr)) {
+                return false;
+            }
+            // 这里做了一个类型的自动推断。
+            Set<String> tempTagNameSet = gson.fromJson(tagsStr, new TypeToken<Set<String>>() {
+            }.getType());
+            // 判空处理
+            // Java8特性Optional
+            // 这样做可以少写if
+            tempTagNameSet = Optional.ofNullable(tempTagNameSet).orElse(new HashSet<>());
+            for (String tagName : tagNameList) {
+                if (!tempTagNameSet.contains(tagName)) {
+                    return false;
+                }
+            }
+            return true;
+        }).map(this::getSafetyUser).collect(Collectors.toList());
+    }
+
+    @Override
+    public List<User> searchUserByTagsSQL(List<String> tagNameList) {
+        // 如果查询有问题，则谁先返回用谁。
+        // 可以并发。
+        // 可以sql查询和内存结合。可以先用Sql过滤一部分，后面在进行查询。
+
+        if (CollectionUtils.isEmpty(tagNameList)) {
+            throw new BusinessException(ErrorCode.PARAMS_ERROR);
+        }
+        QueryWrapper<User> queryWrapper = new QueryWrapper<>();
+        // 拼接 and 查询
+        for (String tagName : tagNameList) {
+            queryWrapper = queryWrapper.like("tags", tagName);
+        }
+        List<User> userList = userMapper.selectList(queryWrapper);
+        // this::getSafetyUser也是Java8的特性。
+        return userList.stream().map(this::getSafetyUser).collect(Collectors.toList());
+    }
+
+    @Override
+    public boolean isAdmin(HttpServletRequest request) {
+        // 仅管理员可查询
+        Object userObj = request.getSession().getAttribute(USER_LOGIN_STATE);
+        User user = (User) userObj;
+        return isAdmin(user);
+    }
+
+    @Override
+    public boolean isAdmin(User user) {
+        // 用户不为null，并且用户的角色为管理员。
+        return (user != null) && (UserRoleEnum.ADMIN.getRole() == user.getUserRole());
+    }
+
+    @Override
+    public int userLogout(HttpServletRequest request) {
+        // 移除用户登录态。
+        request.getSession().removeAttribute(USER_LOGIN_STATE);
+        return 1;
     }
 }
 
