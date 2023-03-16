@@ -11,6 +11,7 @@ import com.github.shanbei.shanbeiuser.model.domain.dto.UserLoginRequest;
 import com.github.shanbei.shanbeiuser.model.domain.dto.UserRegisterRequest;
 import com.github.shanbei.shanbeiuser.service.UserService;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
@@ -180,5 +181,15 @@ public class UserController {
         Object userObject = request.getSession().getAttribute(UserContent.USER_LOGIN_STATE);
         User user = (User) userObject;
         return user != null && user.getUserRole() == UserContent.ADMIN_ROLE;
+    }
+
+
+    @GetMapping("/search/tags")
+    public BaseResponse<List<User>> searchUsersByTags(@RequestParam(required = false) List<String> tagNameList){
+        if (CollectionUtils.isEmpty(tagNameList)){
+            throw new BusinessException(ErrorCode.PARAMS_ERROR);
+        }
+        List<User> userList = userService.searchUserByTagsSQL(tagNameList);
+        return ResultUtils.success(userList);
     }
 }
