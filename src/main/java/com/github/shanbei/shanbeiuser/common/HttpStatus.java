@@ -2,11 +2,10 @@ package com.github.shanbei.shanbeiuser.common;
 
 /**
  * 返回状态码
- * 
+ *
  * @author zhengqingquan
  */
-public class HttpStatus
-{
+public class HttpStatus {
     /**
      * 操作成功
      */
