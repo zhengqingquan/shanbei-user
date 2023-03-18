@@ -1,4 +1,4 @@
-package com.github.shanbei.shanbeiuser.config;
+package com.github.shanbei.shanbeiuser.config.captcha;
 
 import com.google.code.kaptcha.impl.DefaultKaptcha;
 import com.google.code.kaptcha.util.Config;
@@ -11,13 +11,13 @@ import static com.google.code.kaptcha.Constants.*;
 
 /**
  * 验证码配置
- * 
+ *
  * @author zhengqingquan
  */
 @Configuration
-public class CaptchaConfig
-{
+public class CaptchaConfig {
     /**
+     * 该方法用于生成字母和数字字符的验证码。
      * 该方法将被Spring容器调用并且返回的对象将被注册为一个bean。
      * 这个bean的名称为captchaProducer。这个bean的类型是DefaultKaptcha。
      * name参数是可选的，用于指定bean的名称，如果没有指定，则将使用方法名称作为bean的名称。
@@ -28,8 +28,7 @@ public class CaptchaConfig
      * @return DefaultKaptcha
      */
     @Bean(name = "captchaProducer")
-    public DefaultKaptcha getKaptchaBean()
-    {
+    public DefaultKaptcha getKaptchaBean() {
         // 创建一个验证码生成器实例
         DefaultKaptcha defaultKaptcha = new DefaultKaptcha();
         // 创建一个没有默认值的空的属性列表
@@ -59,9 +58,13 @@ public class CaptchaConfig
         return defaultKaptcha;
     }
 
+    /**
+     * 用于生成包含数学问题的验证码。
+     *
+     * @return DefaultKaptcha
+     */
     @Bean(name = "captchaProducerMath")
-    public DefaultKaptcha getKaptchaBeanMath()
-    {
+    public DefaultKaptcha getKaptchaBeanMath() {
         // 创建一个验证码生成器实例
         DefaultKaptcha defaultKaptcha = new DefaultKaptcha();
         // 创建一个没有默认值的空的属性列表
@@ -80,8 +83,8 @@ public class CaptchaConfig
         properties.setProperty(KAPTCHA_TEXTPRODUCER_FONT_SIZE, "35");
         // KAPTCHA_SESSION_KEY
         properties.setProperty(KAPTCHA_SESSION_CONFIG_KEY, "kaptchaCodeMath");
-        // 验证码文本生成器
-        properties.setProperty(KAPTCHA_TEXTPRODUCER_IMPL, "com.ruoyi.framework.config.KaptchaTextCreator");
+        // 设置验证码文本生成器
+        properties.setProperty(KAPTCHA_TEXTPRODUCER_IMPL, KaptchaTextCreator.class.getName());
         // 验证码文本字符间距 默认为2
         properties.setProperty(KAPTCHA_TEXTPRODUCER_CHAR_SPACE, "3");
         // 验证码文本字符长度 默认为5

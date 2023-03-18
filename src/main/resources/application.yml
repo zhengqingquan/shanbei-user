@@ -10,6 +10,7 @@ spring:
     password: 123456
   session:
     timeout: 86400 # session失效时间为一天
+    store-type: redis
   mvc:
     pathmatch:
       # 为了解决Swapper的路径出错问题。
@@ -21,6 +22,8 @@ spring:
     host: 127.0.0.1
     # 端口，默认为6379
     port: 6379
+    # 库号，默认为0
+    database: 0
 server:
   port: 8080
   servlet:
