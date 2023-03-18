@@ -20,8 +20,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * CrossOrigin注解可以解决跨域问题。比较简单粗暴。
+ * 跨域只能防止浏览器一端，而不能防御由Java发起的请求。
+ */
 @RestController
 @RequestMapping("/user")
+@CrossOrigin(origins = {"http://localhost:3000"})
 public class UserController {
 
     @Resource
