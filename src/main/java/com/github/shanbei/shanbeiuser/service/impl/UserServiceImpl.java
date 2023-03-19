@@ -239,6 +239,42 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
         return (user != null) && (UserRoleEnum.ADMIN.getRole() == user.getUserRole());
     }
 
+
+
+    @Override
+    public boolean updateUser(User user, User loginUser) {
+        long userId = user.getId();
+        if (userId<=0){
+            throw new BusinessException(ErrorCode.PARAMS_ERROR);
+        }
+        // TODO 如果用户没有传任何要更新的值，就直接报错，不用执行更新语句。
+        // 如果是管理员允许更新任意用户
+        // 如果不是管理员，只允许更新当前自己的信息
+        if (!isAdmin(loginUser) && userId!=loginUser.getId()){
+            throw new BusinessException(ErrorCode.PARAMS_ERROR);
+        }
+        User oldUser = userMapper.selectById(userId);
+        if (oldUser==null){
+            throw new BusinessException(ErrorCode.PARAMS_ERROR);
+        }
+        return userMapper.updateById(user) > 0;
+        // 如果系统复杂建议更新为两个接口。
+        // 仅管理员和自己可以修改
+    }
+
+    @Override
+    public User getLoginUser(HttpServletRequest request) {
+        if(request==null){
+            return null;
+        }
+
+        Object userObject = request.getSession().getAttribute(USER_LOGIN_STATE);
+        if (userObject==null){
+            throw new BusinessException(ErrorCode.NO_AUTH_ERROR);
+        }
+        return (User) userObject;
+    }
+
     @Override
     public int userLogout(HttpServletRequest request) {
         // 移除用户登录态。

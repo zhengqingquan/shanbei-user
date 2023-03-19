@@ -28,6 +28,12 @@ server:
   port: 8080
   servlet:
     context-path: /api
+    session:
+      cookie:
+        # 这个domain写不写都可以。
+        # 不同的域名可以共享cookie，比如localhost:4000或localhost:5000.
+        # 这个可以用来实现单点登录，也就是不同的域名可以访问同一个后台登录
+        domain: localhost
 mybatis-plus:
   configuration:
     # 关闭驼峰

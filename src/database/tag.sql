@@ -1,3 +1,6 @@
+# 数据库版本
+# SELECT VERSION();
+# 5.5.20
 create table if not exists tag
 (
     id         bigint unsigned auto_increment comment 'id'
