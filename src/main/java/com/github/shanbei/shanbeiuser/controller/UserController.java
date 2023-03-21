@@ -1,6 +1,8 @@
 package com.github.shanbei.shanbeiuser.controller;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.github.shanbei.shanbeiuser.common.BaseResponse;
 import com.github.shanbei.shanbeiuser.common.ErrorCode;
 import com.github.shanbei.shanbeiuser.common.ResultUtils;
@@ -10,7 +12,10 @@ import com.github.shanbei.shanbeiuser.model.domain.User;
 import com.github.shanbei.shanbeiuser.model.domain.dto.UserLoginRequest;
 import com.github.shanbei.shanbeiuser.model.domain.dto.UserRegisterRequest;
 import com.github.shanbei.shanbeiuser.service.UserService;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.*;
 
@@ -27,10 +32,14 @@ import java.util.stream.Collectors;
 @RestController
 @RequestMapping("/user")
 @CrossOrigin(origins = {"http://localhost:3000"})
+@Slf4j
 public class UserController {
 
     @Resource
     private UserService userService;
+
+    @Resource
+    private RedisTemplate<String,Object> redisTemplate;
 
     /**
      * 用户注册
@@ -130,6 +139,45 @@ public class UserController {
     }
 
     /**
+     * 搜索用户
+     *
+     * @param username
+     * @param request
+     * @return
+     */
+    @GetMapping("/recommend")
+    public BaseResponse<Page<User>> recommendUsers(long pageSize,long pageNum,HttpServletRequest request) {
+        // 如果登录了使用推荐算法一
+        // 如果未登录使用默认推荐算法。
+
+        User loginUser = userService.getLoginUser(request);
+        // 如果有缓存，直接读取缓存
+        String redisKey = String.format("shanbei:user:recommend:%s",loginUser.getId());
+        ValueOperations<String,Object> valueConstants = redisTemplate.opsForValue();
+        Page<User> userPage =(Page<User>)redisTemplate.opsForValue().get(redisKey);
+
+        if (userPage != null) {
+            return ResultUtils.success(userPage);
+        }
+
+        // 无缓存，查数据。
+
+        // 偷懒，没定义服务层
+        QueryWrapper<User> queryWrapper = new QueryWrapper<>();
+
+        // 分页
+        Page<User> userPage = userService.page(new Page<>(pageNum,pageSize),queryWrapper);
+
+        // 写缓存
+        try{
+            valueConstants.set(redisKey,userPage);
+        }catch (Exception e){
+            log.error("redis set key error", e);
+        }
+        return ResultUtils.success(userPage);
+    }
+
+    /**
      * 查询当前用户
      *
      * @param request HTTP请求
@@ -188,6 +236,28 @@ public class UserController {
         return user != null && user.getUserRole() == UserContent.ADMIN_ROLE;
     }
 
+
+
+    /**
+     * 更新用户信息
+     * 如果有不希望用户修改的内容，可以封装一个UserDTO
+     *
+     * @return
+     */
+    @PostMapping("/update")
+    public BaseResponse<Boolean> updateUser(User user, HttpServletRequest request){
+        // 1. 校验参数是否为空
+        if (user==null){
+            throw new BusinessException(ErrorCode.PARAMS_ERROR);
+        }
+        User loginUser = userService.getLoginUser(request);
+
+        // 2. 校验权限，是否有权限更新用户信息
+        // 3. 触发更新
+        boolean result = userService.updateUser(user,loginUser);
+        return ResultUtils.success(result);
+
+    }
 
     @GetMapping("/search/tags")
     public BaseResponse<List<User>> searchUsersByTags(@RequestParam(required = false) List<String> tagNameList){
