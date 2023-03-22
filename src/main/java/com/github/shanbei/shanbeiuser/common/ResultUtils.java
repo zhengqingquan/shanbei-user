@@ -20,6 +20,16 @@ public class ResultUtils {
     }
 
     /**
+     * 成功
+     *
+     * @param <T>  返回数据的类型
+     * @return 通用返回类
+     */
+    public static <T> BaseResponse<T> success() {
+        return new BaseResponse<>(ErrorCode.SUCCESS, null);
+    }
+
+    /**
      * 失败
      *
      * @param errorCode 错误码

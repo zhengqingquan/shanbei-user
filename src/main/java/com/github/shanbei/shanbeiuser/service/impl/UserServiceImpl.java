@@ -168,8 +168,8 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
     }
 
     @Override
-    public List<User> searchUserByTagsJVM(List<String> tagNameList) {
-        if (CollectionUtils.isEmpty(tagNameList)) {
+    public List<User> searchUserByTagsJVM(List<String> tagList) {
+        if (CollectionUtils.isEmpty(tagList)) {
             throw new BusinessException(ErrorCode.PARAMS_ERROR);
         }
         // 查询所有的用户
@@ -197,7 +197,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
             // Java8特性Optional
             // 这样做可以少写if
             tempTagNameSet = Optional.ofNullable(tempTagNameSet).orElse(new HashSet<>());
-            for (String tagName : tagNameList) {
+            for (String tagName : tagList) {
                 if (!tempTagNameSet.contains(tagName)) {
                     return false;
                 }
@@ -236,25 +236,23 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
     @Override
     public boolean isAdmin(User user) {
         // 用户不为null，并且用户的角色为管理员。
-        return (user != null) && (UserRoleEnum.ADMIN.getRole() == user.getUserRole());
+        return (user != null) && (user.getUserRole() == UserRoleEnum.ADMIN.getRole());
     }
-
-
 
     @Override
     public boolean updateUser(User user, User loginUser) {
         long userId = user.getId();
-        if (userId<=0){
+        if (userId <= 0) {
             throw new BusinessException(ErrorCode.PARAMS_ERROR);
         }
         // TODO 如果用户没有传任何要更新的值，就直接报错，不用执行更新语句。
         // 如果是管理员允许更新任意用户
         // 如果不是管理员，只允许更新当前自己的信息
-        if (!isAdmin(loginUser) && userId!=loginUser.getId()){
+        if (!isAdmin(loginUser) && userId != loginUser.getId()) {
             throw new BusinessException(ErrorCode.PARAMS_ERROR);
         }
         User oldUser = userMapper.selectById(userId);
-        if (oldUser==null){
+        if (oldUser == null) {
             throw new BusinessException(ErrorCode.PARAMS_ERROR);
         }
         return userMapper.updateById(user) > 0;
@@ -264,22 +262,21 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
 
     @Override
     public User getLoginUser(HttpServletRequest request) {
-        if(request==null){
+        if (request == null) {
             return null;
         }
 
         Object userObject = request.getSession().getAttribute(USER_LOGIN_STATE);
-        if (userObject==null){
+        if (userObject == null) {
             throw new BusinessException(ErrorCode.NO_AUTH_ERROR);
         }
         return (User) userObject;
     }
 
     @Override
-    public int userLogout(HttpServletRequest request) {
+    public void userLogout(HttpServletRequest request) {
         // 移除用户登录态。
         request.getSession().removeAttribute(USER_LOGIN_STATE);
-        return 1;
     }
 }
 

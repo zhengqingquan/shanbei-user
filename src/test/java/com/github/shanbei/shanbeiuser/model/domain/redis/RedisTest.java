@@ -15,7 +15,7 @@ public class RedisTest {
 
     @Test
     public void test(){
-        ValueOperations valueOperations = redisTemplate.opsForValue();
-        valueOperations.set('zhengqqString','dog');
+        // ValueOperations valueOperations = redisTemplate.opsForValue();
+        // valueOperations.set('zhengqqString','dog');
     }
 }

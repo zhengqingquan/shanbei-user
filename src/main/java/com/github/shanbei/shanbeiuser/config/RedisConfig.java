@@ -22,13 +22,13 @@ public class RedisConfig {
     //    return redisTemplate;
     //}
 
-    @Bean
-    public RedisTemplate<String, Object> redisTemplate(RedisConnectionFactory connectionFactory){
-        RedisTemplate<String, Object> objectObjectRedisTemplate = new RedisTemplate<>();
-        // 设置连接器
-        redisTemplate().setConnectionFactory(connectionFactory);
-        // 设置序列化器，否则在存入的时候Redis会有默认的序列化。
-        objectObjectRedisTemplate.setKeySerializer(RedisSerializer.string());
-        return objectObjectRedisTemplate;
-    }
+    // @Bean
+    // public RedisTemplate<String, Object> redisTemplate(RedisConnectionFactory connectionFactory){
+    //     RedisTemplate<String, Object> objectObjectRedisTemplate = new RedisTemplate<>();
+    //     // 设置连接器
+    //     redisTemplate().setConnectionFactory(connectionFactory);
+    //     // 设置序列化器，否则在存入的时候Redis会有默认的序列化。
+    //     objectObjectRedisTemplate.setKeySerializer(RedisSerializer.string());
+    //     return objectObjectRedisTemplate;
+    // }
 }

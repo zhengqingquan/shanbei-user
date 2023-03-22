@@ -21,10 +21,10 @@ public class PreCacheJob {
     private UserMapper userMapper;
 
     // 每天执行，预热加载用户
-    @Scheduled(cron = "0 58 23 * * ? *")
+    @Scheduled(cron = "0 58 23 * * *")
     public void doCacheRecommendUser(){
         // 重点用户，ID为1的
-        List<Long> mainUserList = Arrays.asList(1L);
+        // List<Long> mainUserList = Arrays.asList(1L);
     }
 
 }
