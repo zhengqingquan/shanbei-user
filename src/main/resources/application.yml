@@ -46,22 +46,38 @@ mybatis-plus:
       logic-delete-value: 1 # 逻辑已删除值(默认为 1)
       logic-not-delete-value: 0 # 逻辑未删除值(默认为 0)
 
+
+# Knife4j框架的配置。Knife4j是开源的Swagger UI兼容的RESTful API可视化文档工具。
 knife4j:
+  # "enable"表示Knife4j已启用API文档，默认为false。
   enable: true
+  # "openapi"包含API文档设置。
   openapi:
+    # 文档标题
     title: Knife4j官方文档
-    description: "`我是测试`,**你知道吗**
-    # aaa"
-    email: xiaoymin@foxmail.com
+    # 简要描述
+    description: "`我是测试`,**你知道吗**# aaa"
+    # 电子邮件地址
+    email: zhengqq5202@qq.com
+    # 联系人姓名
     concat: 八一菜刀
+    # url
     url: https://docs.xiaominfo.com
+    # 版本
     version: v4.0
+    # 许可证
     license: Apache 2.0
+    # 许可证的url
     license-url: https://stackoverflow.com/
+    # 服务条款的url
     terms-of-service-url: https://stackoverflow.com/
+    # "group"为API分组为逻辑类别
     group:
+      # test1分组
       test1:
         group-name: 分组名称
+        # 指定了分组API的规则。设置为package，表示API将按包名分组。
         api-rule: package
+        # “api-rule-resources”包含要包含在该组中的包名称列表。
         api-rule-resources:
           - com.knife4j.demo.new3

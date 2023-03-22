@@ -93,6 +93,8 @@
 <!--		</dependency>-->
 
 		<!-- knife4j -->
+		<!-- Springfox版本选择的依然是2.10.5版本，而并非springfox最新3.0.0版本 -->
+		<!-- 详情可以见官网: https://doc.xiaominfo.com/docs/quick-start -->
 		<!-- knife4j对swagger进行了界面封装，因为swagger提供了接口，可以再次继续界面封 -->
 		<!-- 管理能力较弱。适合做文档，不适合做管理 -->
 		<dependency>

@@ -115,7 +115,7 @@ public class UserController {
      * 搜索用户
      *
      * @param username 用户名
-     * @param request 请求
+     * @param request  请求
      * @return 通用返回类
      */
     @GetMapping("/search")
@@ -137,8 +137,8 @@ public class UserController {
     /**
      * 搜索用户
      *
-     * @param request
-     * @return
+     * @param request 请求
+     * @return 通用返回类
      */
     @GetMapping("/recommend")
     public BaseResponse<Page<User>> recommendUsers(long pageSize, long pageNum, HttpServletRequest request) {
@@ -184,10 +184,10 @@ public class UserController {
         Object userObject = request.getSession().getAttribute(UserContent.USER_LOGIN_STATE);
         User currentUser = (User) userObject;
         if (currentUser == null) {
-            return null;
+            throw new BusinessException(ErrorCode.NOT_LOGIN_ERROR);
         }
+        // 若登录，则返回脱敏后的用户信息。
         long userId = currentUser.getId();
-        // 校验用户是否合法
         User user = userService.getById(userId);
         User result = userService.getSafetyUser(user);
         return ResultUtils.success(result);
@@ -198,7 +198,7 @@ public class UserController {
      *
      * @param id      用户ID
      * @param request 请求
-     * @return
+     * @return 通用返回类
      */
     @PostMapping("/delete")
     public BaseResponse<Boolean> deleteUser(@RequestBody long id, HttpServletRequest request) {
@@ -208,7 +208,7 @@ public class UserController {
             throw new BusinessException(ErrorCode.NO_AUTH_ERROR);
         }
 
-        // 参数的非空检查
+        // 参数检查
         if (id <= 0) {
             throw new BusinessException(ErrorCode.PARAMS_ERROR);
         }
@@ -222,7 +222,7 @@ public class UserController {
      * 更新用户信息
      * 如果有不希望用户修改的内容，可以封装一个UserDTO
      *
-     * @return
+     * @return 通用返回类
      */
     @PostMapping("/update")
     public BaseResponse<Boolean> updateUser(User user, HttpServletRequest request) {
@@ -239,6 +239,13 @@ public class UserController {
 
     }
 
+
+    /**
+     * 根据用户标签搜索用户
+     *
+     * @param tagNameList
+     * @return
+     */
     @GetMapping("/search/tags")
     public BaseResponse<List<User>> searchUsersByTags(@RequestParam(required = false) List<String> tagNameList) {
         if (CollectionUtils.isEmpty(tagNameList)) {
