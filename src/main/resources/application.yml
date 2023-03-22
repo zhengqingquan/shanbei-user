@@ -38,8 +38,8 @@ spring:
 server:
   # 端口号
   port: 8080
-  #
   servlet:
+    # 应用的访问路径
     context-path: /api
     session:
       cookie:
