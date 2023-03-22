@@ -140,7 +140,6 @@ public class UserController {
     /**
      * 搜索用户
      *
-     * @param username
      * @param request
      * @return
      */
@@ -165,7 +164,7 @@ public class UserController {
         QueryWrapper<User> queryWrapper = new QueryWrapper<>();
 
         // 分页
-        Page<User> userPage = userService.page(new Page<>(pageNum,pageSize),queryWrapper);
+        // Page<User> userPage = userService.page(new Page<>(pageNum,pageSize),queryWrapper);
 
         // 写缓存
         try{

@@ -62,7 +62,7 @@ public class User implements Serializable {
     private String email;
 
     /**
-     * 邮箱
+     * 用户标签
      */
     private String tags;
 
