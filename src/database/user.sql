@@ -10,6 +10,7 @@ create table user
     gender       tinyint                             null comment '性别',
     phone        varchar(128)                        null comment '电话',
     email        varchar(512)                        null comment '邮箱',
+    tags         varchar(1024)                       null comment '用户标签（Json格式）',
     userRole     int                                 null comment '用户角色',
     userStatus   int       default 0                 not null comment '状态',
     createTime   datetime  default CURRENT_TIMESTAMP not null comment '创建时间。默认当前时间。',

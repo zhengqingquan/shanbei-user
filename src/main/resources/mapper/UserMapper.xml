@@ -2,7 +2,7 @@
 <!DOCTYPE mapper
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.github.shanbei.shanbeiuser.mapper.TagMapper">
+<mapper namespace="com.github.shanbei.shanbeiuser.mapper.UserMapper">
 
     <resultMap id="BaseResultMap" type="com.github.shanbei.shanbeiuser.model.domain.User">
             <id property="id" column="id" jdbcType="BIGINT"/>
@@ -14,6 +14,7 @@
             <result property="gender" column="gender" jdbcType="TINYINT"/>
             <result property="phone" column="phone" jdbcType="VARCHAR"/>
             <result property="email" column="email" jdbcType="VARCHAR"/>
+            <result property="tags" column="tags" jdbcType="VARCHAR"/>
             <result property="userRole" column="userRole" jdbcType="INTEGER"/>
             <result property="userStatus" column="userStatus" jdbcType="INTEGER"/>
             <result property="createTime" column="createTime" jdbcType="TIMESTAMP"/>
@@ -25,7 +26,7 @@
         id,username,userAccount,
         userPassword,avatarUrl,introduction,
         gender,phone,email,
-        userRole,userStatus,createTime,
-        updateTime,isDelete
+        tags,userRole,userStatus,
+        createTime,updateTime,isDelete
     </sql>
 </mapper>

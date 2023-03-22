@@ -14,25 +14,28 @@ import java.util.List;
 public interface UserService extends IService<User> {
 
     /**
-     * 用户注册功能
-     * @param userAccount:   用户账号
-     * @param userPassword:  用户密码
-     * @param checkPassword: 校验密码
-     * @return 新用户 id
+     * 用户注册功能（使用账号和密码注册）
+     *
+     * @param userAccount   用户账号
+     * @param userPassword  用户密码
+     * @param checkPassword 校验密码
+     * @return 新用户id
      */
     long userRegister(String userAccount, String userPassword, String checkPassword);
 
     /**
-     * 用户登录
-     * @param userAccount 用户账号
+     * 用户登录（使用账号和密码注册）
+     *
+     * @param userAccount  用户账号
      * @param userPassword 用户密码
-     * @param request http请求
+     * @param request      http请求
      * @return 返回脱敏后的账号信息
      */
-    User userlogin(String userAccount, String userPassword, HttpServletRequest request);
+    User userLogin(String userAccount, String userPassword, HttpServletRequest request);
 
     /**
      * 用户脱敏
+     *
      * @param user 用户信息
      * @return 安全的用户信息
      */
@@ -40,7 +43,8 @@ public interface UserService extends IService<User> {
 
     /**
      * 用户注销
-     * @param request
+     *
+     * @param request 网络请求
      * @return
      */
     int userLogout(HttpServletRequest request);
@@ -74,8 +78,8 @@ public interface UserService extends IService<User> {
     /**
      * 是否为管理员
      *
-     * @param user
-     * @return
+     * @param user 用户
+     * @return 是否为管理员
      */
     boolean isAdmin(User user);
 
@@ -85,7 +89,7 @@ public interface UserService extends IService<User> {
      * @param user
      * @return
      */
-    boolean updateUser(User user,User LoginUser);
+    boolean updateUser(User user, User LoginUser);
 
     /**
      * 获取当前用户信息

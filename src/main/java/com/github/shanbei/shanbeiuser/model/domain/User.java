@@ -62,6 +62,11 @@ public class User implements Serializable {
     private String email;
 
     /**
+     * 邮箱
+     */
+    private String tags;
+
+    /**
      * 用户角色
      */
     private Integer userRole;

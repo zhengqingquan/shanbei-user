@@ -1,7 +1,6 @@
 package com.github.shanbei.shanbeiuser.controller;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.github.shanbei.shanbeiuser.common.BaseResponse;
 import com.github.shanbei.shanbeiuser.common.ErrorCode;
@@ -92,7 +91,7 @@ public class UserController {
             throw new BusinessException(ErrorCode.PARAMS_ERROR);
         }
 
-        User result = userService.userlogin(userAccount, userPassword, request);
+        User result = userService.userLogin(userAccount, userPassword, request);
 
         return ResultUtils.success(result);
     }
