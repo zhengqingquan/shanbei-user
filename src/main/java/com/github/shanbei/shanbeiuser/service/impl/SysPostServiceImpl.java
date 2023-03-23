@@ -3,6 +3,8 @@ package com.github.shanbei.shanbeiuser.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.github.shanbei.shanbeiuser.common.ErrorCode;
+import com.github.shanbei.shanbeiuser.exception.BusinessException;
 import com.github.shanbei.shanbeiuser.mapper.SysPostMapper;
 import com.github.shanbei.shanbeiuser.model.domain.SysPost;
 import com.github.shanbei.shanbeiuser.service.SysPostService;
@@ -31,7 +33,11 @@ public class SysPostServiceImpl extends ServiceImpl<SysPostMapper, SysPost>
 
     @Override
     public boolean addPost(SysPost post) {
-        return false;
+        boolean saveResult = this.save(post);
+        if (!saveResult) {
+            throw new BusinessException(ErrorCode.PARAMS_ERROR, "数据库插入失败");
+        }
+        return true;
     }
 
     @Override
@@ -46,8 +52,8 @@ public class SysPostServiceImpl extends ServiceImpl<SysPostMapper, SysPost>
 
     @Override
     public SysPost selectPostByName(String postName) {
-        QueryWrapper<SysPost> queryWrapper=new QueryWrapper<>();
-        queryWrapper.eq("postName",postName);
+        QueryWrapper<SysPost> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("postName", postName);
         return sysPostMapper.selectOne(queryWrapper);
     }
 }

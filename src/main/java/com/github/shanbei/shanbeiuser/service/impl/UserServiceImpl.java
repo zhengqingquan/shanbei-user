@@ -129,8 +129,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
         queryWrapper.eq("userPassword", encryptPassword);
         User user = userMapper.selectOne(queryWrapper);
         if (user == null) {
-            log.info("user login failed, userAccount cannot match userPasswod.");
-            return null;
+            throw new BusinessException(ErrorCode.PARAMS_ERROR,"账号与密码不匹配");
         }
 
         // 用户脱敏
