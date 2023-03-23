@@ -14,25 +14,28 @@ import java.util.List;
 public interface UserService extends IService<User> {
 
     /**
-     * 用户注册功能
-     * @param userAccount:   用户账号
-     * @param userPassword:  用户密码
-     * @param checkPassword: 校验密码
-     * @return 新用户 id
+     * 用户注册功能（使用账号和密码注册）
+     *
+     * @param userAccount   用户账号
+     * @param userPassword  用户密码
+     * @param checkPassword 校验密码
+     * @return 新用户id
      */
     long userRegister(String userAccount, String userPassword, String checkPassword);
 
     /**
-     * 用户登录
-     * @param userAccount 用户账号
+     * 用户登录（使用账号和密码注册）
+     *
+     * @param userAccount  用户账号
      * @param userPassword 用户密码
-     * @param request http请求
+     * @param request      http请求
      * @return 返回脱敏后的账号信息
      */
-    User userlogin(String userAccount, String userPassword, HttpServletRequest request);
+    User userLogin(String userAccount, String userPassword, HttpServletRequest request);
 
     /**
      * 用户脱敏
+     *
      * @param user 用户信息
      * @return 安全的用户信息
      */
@@ -40,26 +43,26 @@ public interface UserService extends IService<User> {
 
     /**
      * 用户注销
-     * @param request
-     * @return
+     *
+     * @param request 网络请求
      */
-    int userLogout(HttpServletRequest request);
+    void userLogout(HttpServletRequest request);
 
     /**
-     * 根据tag搜索用户
+     * 根据用户标签搜索用户
      * 使用内存查询的方法
      *
-     * @param tagNameList
-     * @return
+     * @param tagList 标签列表
+     * @return 用户列表
      */
-    public List<User> searchUserByTagsJVM(List<String> tagNameList);
+    List<User> searchUserByTagsJVM(List<String> tagList);
 
     /**
-     * 根据tag搜索用户
+     * 根据用户标签搜索用户
      * 使用数据库查询的方法
      *
-     * @param tagList
-     * @return
+     * @param tagList 标签列表
+     * @return 用户列表
      */
     List<User> searchUserByTagsSQL(List<String> tagList);
 
@@ -74,8 +77,8 @@ public interface UserService extends IService<User> {
     /**
      * 是否为管理员
      *
-     * @param user
-     * @return
+     * @param user 用户
+     * @return 是否为管理员
      */
     boolean isAdmin(User user);
 
@@ -85,7 +88,7 @@ public interface UserService extends IService<User> {
      * @param user
      * @return
      */
-    boolean updateUser(User user,User LoginUser);
+    boolean updateUser(User user, User LoginUser);
 
     /**
      * 获取当前用户信息

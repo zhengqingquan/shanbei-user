@@ -1,7 +1,6 @@
 package com.github.shanbei.shanbeiuser.controller;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.github.shanbei.shanbeiuser.common.BaseResponse;
 import com.github.shanbei.shanbeiuser.common.ErrorCode;
@@ -39,13 +38,13 @@ public class UserController {
     private UserService userService;
 
     @Resource
-    private RedisTemplate<String,Object> redisTemplate;
+    private RedisTemplate<String, Object> redisTemplate;
 
     /**
      * 用户注册
      *
      * @param userRegisterRequest 用户注册请求数据
-     * @return
+     * @return 通用返回类
      */
     @PostMapping("/register")
     public BaseResponse<Long> userRegister(@RequestBody UserRegisterRequest userRegisterRequest) {
@@ -72,9 +71,9 @@ public class UserController {
     /**
      * 用户登录
      *
-     * @param userLoginRequest
-     * @param request
-     * @return
+     * @param userLoginRequest 用户登录请求数据
+     * @param request          请求
+     * @return 通用返回类
      */
     @PostMapping("/login")
     public BaseResponse<User> userLogin(@RequestBody UserLoginRequest userLoginRequest, HttpServletRequest request) {
@@ -92,7 +91,7 @@ public class UserController {
             throw new BusinessException(ErrorCode.PARAMS_ERROR);
         }
 
-        User result = userService.userlogin(userAccount, userPassword, request);
+        User result = userService.userLogin(userAccount, userPassword, request);
 
         return ResultUtils.success(result);
     }
@@ -100,31 +99,28 @@ public class UserController {
     /**
      * 用户注销
      *
-     * @param request
-     * @return
+     * @param request 请求
+     * @return 通用返回类
      */
     @PostMapping("/logout")
     public BaseResponse<Integer> userLogout(HttpServletRequest request) {
         if (request == null) {
             throw new BusinessException(ErrorCode.PARAMS_ERROR);
         }
-
-        int result = userService.userLogout(request);
-
-        return ResultUtils.success(result);
+        userService.userLogout(request);
+        return ResultUtils.success();
     }
-
 
     /**
      * 搜索用户
      *
-     * @param username
-     * @param request
-     * @return
+     * @param username 用户名
+     * @param request  请求
+     * @return 通用返回类
      */
     @GetMapping("/search")
     public BaseResponse<List<User>> searchUsers(String username, HttpServletRequest request) {
-        if (!isAdmin(request)) {
+        if (!userService.isAdmin(request)) {
             return ResultUtils.success(new ArrayList<>());
         }
 
@@ -141,20 +137,19 @@ public class UserController {
     /**
      * 搜索用户
      *
-     * @param username
-     * @param request
-     * @return
+     * @param request 请求
+     * @return 通用返回类
      */
     @GetMapping("/recommend")
-    public BaseResponse<Page<User>> recommendUsers(long pageSize,long pageNum,HttpServletRequest request) {
+    public BaseResponse<Page<User>> recommendUsers(long pageSize, long pageNum, HttpServletRequest request) {
         // 如果登录了使用推荐算法一
         // 如果未登录使用默认推荐算法。
 
         User loginUser = userService.getLoginUser(request);
         // 如果有缓存，直接读取缓存
-        String redisKey = String.format("shanbei:user:recommend:%s",loginUser.getId());
-        ValueOperations<String,Object> valueConstants = redisTemplate.opsForValue();
-        Page<User> userPage =(Page<User>)redisTemplate.opsForValue().get(redisKey);
+        String redisKey = String.format("shanbei:user:recommend:%s", loginUser.getId());
+        ValueOperations<String, Object> valueConstants = redisTemplate.opsForValue();
+        Page<User> userPage = (Page<User>) redisTemplate.opsForValue().get(redisKey);
 
         if (userPage != null) {
             return ResultUtils.success(userPage);
@@ -166,12 +161,12 @@ public class UserController {
         QueryWrapper<User> queryWrapper = new QueryWrapper<>();
 
         // 分页
-        Page<User> userPage = userService.page(new Page<>(pageNum,pageSize),queryWrapper);
+        // Page<User> userPage = userService.page(new Page<>(pageNum,pageSize),queryWrapper);
 
         // 写缓存
-        try{
-            valueConstants.set(redisKey,userPage);
-        }catch (Exception e){
+        try {
+            valueConstants.set(redisKey, userPage);
+        } catch (Exception e) {
             log.error("redis set key error", e);
         }
         return ResultUtils.success(userPage);
@@ -189,10 +184,10 @@ public class UserController {
         Object userObject = request.getSession().getAttribute(UserContent.USER_LOGIN_STATE);
         User currentUser = (User) userObject;
         if (currentUser == null) {
-            return null;
+            throw new BusinessException(ErrorCode.NOT_LOGIN_ERROR);
         }
+        // 若登录，则返回脱敏后的用户信息。
         long userId = currentUser.getId();
-        // 校验用户是否合法
         User user = userService.getById(userId);
         User result = userService.getSafetyUser(user);
         return ResultUtils.success(result);
@@ -201,19 +196,19 @@ public class UserController {
     /**
      * 删除用户
      *
-     * @param id 用户ID
+     * @param id      用户ID
      * @param request 请求
-     * @return
+     * @return 通用返回类
      */
     @PostMapping("/delete")
     public BaseResponse<Boolean> deleteUser(@RequestBody long id, HttpServletRequest request) {
 
         // 权限检查
-        if (!isAdmin(request)) {
+        if (!userService.isAdmin(request)) {
             throw new BusinessException(ErrorCode.NO_AUTH_ERROR);
         }
 
-        // 参数的非空检查
+        // 参数检查
         if (id <= 0) {
             throw new BusinessException(ErrorCode.PARAMS_ERROR);
         }
@@ -222,46 +217,38 @@ public class UserController {
         return ResultUtils.success(result);
     }
 
-    /**
-     * 是否为管理员
-     *
-     * @param request Http请求
-     * @return bool
-     */
-    private boolean isAdmin(HttpServletRequest request) {
-        // 鉴权，仅管理员可以操作
-        // 先获取用户登录态
-        Object userObject = request.getSession().getAttribute(UserContent.USER_LOGIN_STATE);
-        User user = (User) userObject;
-        return user != null && user.getUserRole() == UserContent.ADMIN_ROLE;
-    }
-
-
 
     /**
      * 更新用户信息
      * 如果有不希望用户修改的内容，可以封装一个UserDTO
      *
-     * @return
+     * @return 通用返回类
      */
     @PostMapping("/update")
-    public BaseResponse<Boolean> updateUser(User user, HttpServletRequest request){
+    public BaseResponse<Boolean> updateUser(User user, HttpServletRequest request) {
         // 1. 校验参数是否为空
-        if (user==null){
+        if (user == null) {
             throw new BusinessException(ErrorCode.PARAMS_ERROR);
         }
         User loginUser = userService.getLoginUser(request);
 
         // 2. 校验权限，是否有权限更新用户信息
         // 3. 触发更新
-        boolean result = userService.updateUser(user,loginUser);
+        boolean result = userService.updateUser(user, loginUser);
         return ResultUtils.success(result);
 
     }
 
+
+    /**
+     * 根据用户标签搜索用户
+     *
+     * @param tagNameList
+     * @return
+     */
     @GetMapping("/search/tags")
-    public BaseResponse<List<User>> searchUsersByTags(@RequestParam(required = false) List<String> tagNameList){
-        if (CollectionUtils.isEmpty(tagNameList)){
+    public BaseResponse<List<User>> searchUsersByTags(@RequestParam(required = false) List<String> tagNameList) {
+        if (CollectionUtils.isEmpty(tagNameList)) {
             throw new BusinessException(ErrorCode.PARAMS_ERROR);
         }
         List<User> userList = userService.searchUserByTagsSQL(tagNameList);

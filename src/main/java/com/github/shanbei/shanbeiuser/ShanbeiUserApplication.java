@@ -13,8 +13,8 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 @EnableScheduling
 public class ShanbeiUserApplication {
 
-	public static void main(String[] args) {
-		SpringApplication.run(ShanbeiUserApplication.class, args);
-	}
+    public static void main(String[] args) {
+        SpringApplication.run(ShanbeiUserApplication.class, args);
+    }
 
 }

@@ -1,32 +1,45 @@
+# spring的核心属性，详细配置可以在下面的官方文档中查询。
+# spring.A.1. Core Properties
+# https://docs.spring.io/spring-boot/docs/current/reference/htmlsingle/#appendix
 spring:
   profiles:
-    active: dev # 默认环境dev
+    # 默认环境dev
+    active: dev
   application:
+    # 应用程序名称
     name: shanbei-user
+  # 数据源
   datasource:
     driver-class-name: com.mysql.jdbc.Driver
     url: jdbc:mysql://localhost:3306/shanbei
     username: root
     password: 123456
   session:
-    timeout: 86400 # session失效时间为一天
+    # session会话失效时间。如果未指定持续时间后缀，则将使用秒。
+    timeout: 86400 # 一天
     store-type: redis
   mvc:
     pathmatch:
-      # 为了解决Swapper的路径出错问题。
+      # 选择将请求路径与注册映射匹配的策略。默认为：PATH_PATTERN_PARSER
       matching-strategy: ANT_PATH_MATCHER
   # redis 配置
   redis:
-    # 地址
-#    host: localhost
-    host: 127.0.0.1
-    # 端口，默认为6379
+    # 服务器主机，默认为localhost
+    host: localhost
+    # 端口号，默认为6379
     port: 6379
     # 库号，默认为0
     database: 0
+
+
+# spring的服务属性，详细配置可以在下面的官方文档中查询。
+# spring.A.11. Server Properties
+# https://docs.spring.io/spring-boot/docs/current/reference/htmlsingle/#appendix.application-properties.server
 server:
+  # 端口号
   port: 8080
   servlet:
+    # 应用的访问路径
     context-path: /api
     session:
       cookie:
@@ -34,34 +47,61 @@ server:
         # 不同的域名可以共享cookie，比如localhost:4000或localhost:5000.
         # 这个可以用来实现单点登录，也就是不同的域名可以访问同一个后台登录
         domain: localhost
-mybatis-plus:
-  configuration:
-    # 关闭驼峰
-    map-underscore-to-camel-case: false
-    # 开启输出日志
-    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
-  global-config:
-    db-config:
-      logic-delete-field: isDelete # 全局逻辑删除的实体字段名(since 3.3.0,配置后可以忽略不配置步骤2)
-      logic-delete-value: 1 # 逻辑已删除值(默认为 1)
-      logic-not-delete-value: 0 # 逻辑未删除值(默认为 0)
 
+
+# mybatis-plus框架的配置。
+# 配置文档：https://baomidou.com/pages/56bac0/
+mybatis-plus:
+  # 配置
+  configuration:
+    # 这个属性的作用是将数据库中下划线命名的字段名，映射为驼峰命名。如果设置为 false，则不进行转换。
+    map-underscore-to-camel-case: false
+    # 开启输出日志，将日志输出到控制台。该配置的值表示实现输出的实现类。
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+  # 全局配置
+  global-config:
+    # 数据源配置
+    db-config:
+      # 全局逻辑删除的实体字段名
+      logicDeleteField: isDelete
+      # 逻辑已删除值（默认为 1）
+      logicDeleteValue: 1
+      # 逻辑未删除值（默认为 0）
+      logicNotDeleteValue: 0
+
+
+# Knife4j框架的配置。
+# Knife4j是开源的Swagger UI兼容的RESTful API可视化文档工具。
 knife4j:
+  # "enable"表示Knife4j已启用API文档，默认为false。
   enable: true
+  # "openapi"包含API文档设置。
   openapi:
-    title: Knife4j官方文档
-    description: "`我是测试`,**你知道吗**
-    # aaa"
-    email: xiaoymin@foxmail.com
-    concat: 八一菜刀
-    url: https://docs.xiaominfo.com
+    # 文档标题
+    title: shanbei-user
+    # 简要描述
+    description: "shanbei-user接口文档"
+    # 电子邮件地址
+    email: zhengqq5202@qq.com
+    # 联系人姓名
+    concat: zhengqingquan
+    # url
+    url: http://justzqq.com/
+    # 版本
     version: v4.0
+    # 许可证
     license: Apache 2.0
+    # 许可证的url
     license-url: https://stackoverflow.com/
+    # 服务条款的url
     terms-of-service-url: https://stackoverflow.com/
+    # "group"为API分组为逻辑类别
     group:
+      # test1分组
       test1:
         group-name: 分组名称
+        # 指定了分组API的规则。设置为package，表示API将按包名分组。
         api-rule: package
+        # “api-rule-resources”包含要包含在该组中的包名称列表。
         api-rule-resources:
           - com.knife4j.demo.new3
