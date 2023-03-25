@@ -6,6 +6,8 @@ import com.github.shanbei.shanbeiuser.service.TagService;
 import com.github.shanbei.shanbeiuser.mapper.TagMapper;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 /**
 * @author 96400
 * @description 针对表【tag(标签表)】的数据库操作Service实现
@@ -15,6 +17,20 @@ import org.springframework.stereotype.Service;
 public class TagServiceImpl extends ServiceImpl<TagMapper, Tag>
     implements TagService{
 
+    @Override
+    public boolean addTag() {
+        return false;
+    }
+
+    @Override
+    public boolean addTag(List<Tag> tagList) {
+        return false;
+    }
+
+    @Override
+    public boolean removeTag() {
+        return false;
+    }
 }
 
 
