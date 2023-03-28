@@ -105,3 +105,12 @@ knife4j:
         # “api-rule-resources”包含要包含在该组中的包名称列表。
         api-rule-resources:
           - com.knife4j.demo.new3
+
+# token配置
+token:
+  # 令牌自定义标识
+  header: Authorization
+  # 令牌密钥
+  secret: abcL@defghiE#jklF$mnT%opH@qrsA*tN^uvwxyD%z
+  # 令牌有效期（默认30分钟）
+  expireTime: 2592000
