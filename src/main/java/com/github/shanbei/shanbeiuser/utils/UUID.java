@@ -1,7 +1,10 @@
 // package com.github.shanbei.shanbeiuser.utils;
 //
+// import com.github.shanbei.shanbeiuser.common.ErrorCode;
+// import com.github.shanbei.shanbeiuser.exception.BusinessException;
 // import com.ruoyi.common.exception.UtilException;
 //
+// import java.io.Serializable;
 // import java.security.MessageDigest;
 // import java.security.NoSuchAlgorithmException;
 // import java.security.SecureRandom;
@@ -10,15 +13,23 @@
 //
 // /**
 //  * 提供通用唯一识别码（universally unique identifier）（UUID）实现
+//  * 重写了Comparable<T>接口。实现该接口的类可以比较自身与另一个对象的大小关系，以便进行排序等操作。
 //  *
 //  * @author zhengqingquan
 //  */
-// public final class UUID implements java.io.Serializable, Comparable<UUID>
+// public final class UUID implements Serializable, Comparable<UUID>
 // {
 //     private static final long serialVersionUID = -1185015143654744140L;
 //
 //     /**
-//      * SecureRandom 的单例
+//      * SecureRandom的单例。
+//      * 基于静态内部类的方式实现单例模式。
+//      * SecureRandom是Java提供的用于生成随机数的类，它通常用于生成密码、加密密钥等安全相关的场景。
+//      * 在静态常量numberGenerator的定义中，使用了一个名为getSecureRandom()的静态方法来初始化SecureRandom对象。
+//      * 由于该方法是私有的，外部无法调用，因此可以保证SecureRandom对象只在Holder类内部被创建一次。
+//      * 通过这种方式，可以确保在整个应用程序运行期间，只有一个SecureRandom对象被创建，并且该对象的初始化是线程安全的。
+//      * 因此，在多线程环境下，可以安全地使用该对象来生成随机数。
+//      * 此外，由于Holder类只有在第一次被访问时才会被加载，因此也可以延迟初始化SecureRandom对象，从而提高应用程序的启动速度和内存使用效率。
 //      */
 //     private static class Holder
 //     {
@@ -319,9 +330,17 @@
 //     }
 //
 //     /**
-//      * 返回此{@code UUID} 的字符串表现形式。
+//      * UUID的格式是由32个十六进制数字和4个连字符“-”组成的，总共有36个字符
+//      * 其中，32个十六进制数字可以分为5个部分，分别是：
 //      *
-//      * <p>
+//      * 时间戳的高位部分（8个字符）
+//      * 时间戳的中位部分（4个字符）
+//      * 时间戳的低位部分（4个字符）
+//      * UUID的变体（2个字符）
+//      * UUID的版本号（2个字符）
+//      * 根据UUID版本的不同，以上不同部分的含义可能会有所不同。
+//      *
+//      * 返回此{@code UUID} 的字符串表现形式。
 //      * UUID 的字符串表示形式由此 BNF 描述：
 //      *
 //      * <pre>
@@ -344,6 +363,7 @@
 //      */
 //     public String toString(boolean isSimple)
 //     {
+//         // 如果为简单模式，则创建一个32位的StringBuilder，否则创建36位的StringBuilder。
 //         final StringBuilder builder = new StringBuilder(isSimple ? 32 : 36);
 //         // time_low
 //         builder.append(digits(mostSigBits >> 32, 8));
@@ -410,13 +430,10 @@
 //     // Comparison Operations
 //
 //     /**
-//      * 将此 UUID 与指定的 UUID 比较。
-//      *
-//      * <p>
-//      * 如果两个 UUID 不同，且第一个 UUID 的最高有效字段大于第二个 UUID 的对应字段，则第一个 UUID 大于第二个 UUID。
+//      * 将此UUID与指定的UUID比较。
+//      * 如果两个UUID不同，且第一个UUID的最高有效字段大于第二个UUID的对应字段，则第一个UUID大于第二个UUID。
 //      *
 //      * @param val 与此 UUID 比较的 UUID
-//      *
 //      * @return 在此 UUID 小于、等于或大于 val 时，分别返回 -1、0 或 1。
 //      *
 //      */
@@ -467,11 +484,19 @@
 //     {
 //         try
 //         {
+//             // SecureRandom.getInstance是Java中用于获取SecureRandom对象的静态工厂方法。
+//             // SecureRandom是Java提供的安全的随机数生成器。
+//             // 它能够产生高质量的随机数序列，并且保证生成的随机数具有高度的随机性和不可预测性。
+//             // 通常用于密码学、安全性相关的场景，例如生成密钥、签名等。
+//             //
+//             // SHA1PRNG是Java中的一种伪随机数生成器（Pseudo Random Number Generator），也称为假随机数生成器。
+//             // 它是基于SHA-1哈希算法的一种伪随机数生成算法，通常被用于生成密码、加密密钥、数字签名等场景。
 //             return SecureRandom.getInstance("SHA1PRNG");
 //         }
 //         catch (NoSuchAlgorithmException e)
 //         {
-//             throw new UtilException(e);
+//             // throw new UtilException(e);
+//             throw new BusinessException(ErrorCode.SYSTEM_ERROR);
 //         }
 //     }
 //
